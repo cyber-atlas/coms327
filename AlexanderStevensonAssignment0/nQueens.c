@@ -1,7 +1,7 @@
 #include <stdio.h>
 #define ROWCOL 8
 
-int board[ROWCOL][ROWCOL]; 
+int[ROWCOL][ROWCOL] board; g
 int check(int row, int col);
 int numQueens =0;
 int[ROWCOL*2] queenLocations;
