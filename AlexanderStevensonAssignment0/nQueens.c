@@ -1,18 +1,21 @@
 #include <stdio.h>
 #define ROWCOL 8
 
-int[ROWCOL][ROWCOL] board; g
-int check(int row, int col);
+int board[ROWCOL][ROWCOL]; 
+int place(int row, int col);
+void change(int row, int col);
+void printSolution();
 int numQueens =0;
-int[ROWCOL*2] queenLocations;
+int queenLocations[ROWCOL*2];
 int solution =0;
-int main ()
+
+int main (){
 	
 	for (int i= 0; i < ROWCOL; i++){ 
 		for (int j =0; j < ROWCOL; j++){
 			place(i, j);
 			change(i, j);
-			printsolution();
+			printSolution();
 	} 
 	}
 	
@@ -52,31 +55,32 @@ void change(int row, int col){
 
 	for(int i = row,j = col; j<ROWCOL, i<ROWCOL; i++,j++ ){
 	
-		table[i][j] = 7;
+		board[i][j] = 7;
 	}
-	for(int i = row,j = col; j<ROWCOL, i<ROWCOL; i++,j-- ){
+	for(int i = row,j = col; j>0 && i<ROWCOL; i++,j-- ){
 	
-		table[i][j] = 7;
+		board[i][j] = 7;
 	}
 
-	for(int i = row,j = col; j<ROWCOL, i<ROWCOL; i--,j++ ){
+	for(int i = row,j = col; j<ROWCOL && i>0; i--,j++ ){
 	
-		table[i][j] = 7;
+		board[i][j] = 7;
 	}
-	for(int i = row,j = col; j<ROWCOL && i<ROWCOL; i--,j-- ){
+	for(int i = row,j = col; j>0 && i>0; i--,j-- ){
 	
-		table[i][j] = 7;
+		board[i][j] = 7;
 	}
 }
 
 void printSolution(){
 
-
+	printf("%d", solution);
 	//Need to revisit because this is not very portable
-	int alpha[ROWCOLS] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'}	
-	for (int i=0; i < queenLocations.length; i+= 2){
+	int alpha[ROWCOL] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};	
+	for (int i=0; i < ROWCOL*2; i+= 2){
 		//I saved everything as row, col. Spec says print as col, row
 		printf("%c%d", alpha[queenLocations[i+1]], queenLocations[i]);
 	}	
 	solution++;
+	printf ("\n");
 }
