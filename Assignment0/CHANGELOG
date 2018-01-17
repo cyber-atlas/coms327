@@ -1,0 +1,6 @@
+9 Jan 2018: Started working on the project, created an array for the table.
+11 Jan 2018: Worked on the place method, created the check and remove methods.
+14 Jan 2018: For some reason, my solution is only printing out the first 64 Solutions. I don't understand why not.
+15 Jan 2018: Went to office hours, was told that the best way to implement it using 8 for loops. I erased all my existing code and started again.
+The code now loops through the entire table looking for places to put the queen using 8 for loops. Also, now increment the value of the spaces that are not open for a queen to be placed.
+16 Jan 2018: Came into office for some clarifications. Debugged alot. The code now prints out 94 valid solutions.
