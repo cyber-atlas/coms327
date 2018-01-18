@@ -20,15 +20,6 @@ int main(){
 
 }
 
-//Generates the start of the room
-void createRoom(){
-	
-	srand(time(NULL));
-
-	int xpos = 
-
-}
-
 
 void border(){
 	//Prints the top and bottom border of the dungeon. 
