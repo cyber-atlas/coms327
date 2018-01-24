@@ -1,3 +1,7 @@
+
+Date:   Wed Jan 24 10:24:53 2018 -0600
+
+    Was able to clean up the code ALOT. Rooms no longer touch and the corridor function works. Implmented this by creating a border around each room and removing it in printer.
 Date:   Tue Jan 23 21:56:04 2018 -0600
 
     Have been working on getting the corridors to work properly. Rewrote the function and it did not work, reverting for now.
@@ -25,4 +29,3 @@ Date:   Fri Jan 19 18:51:07 2018 -0600
 Date:   Thu Jan 18 00:29:00 2018 -0600
 
     Started mucking about working on randomly generating a room
-
