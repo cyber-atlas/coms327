@@ -1,0 +1,5 @@
+Generates rooms by using a 2d array to hold the map and updating the dungeon as rooms are added.
+The functon initDungeon initializes all non border spaces to rocks. 
+There is a createRoom function which generates 5-10 rooms to fit in the dungeon. Uses helper functions to check to make sure the room is valid and place the room in the dungeon array. 
+printer prints the dungeon
+createCorridor places a corridor between the top left of the rooms

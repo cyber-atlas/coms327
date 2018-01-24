@@ -1,0 +1,28 @@
+Date:   Tue Jan 23 21:56:04 2018 -0600
+
+    Have been working on getting the corridors to work properly. Rewrote the function and it did not work, reverting for now.
+
+Date:   Tue Jan 23 15:51:55 2018 -0600
+
+    Rewrote adder and checker, and debugged. Code works now, however corridors are turned off and the rooms may be made adjacent still.
+
+Date:   Tue Jan 23 12:37:53 2018 -0600
+
+    Added checker, roomAdder, and changed some logic. Getting a seg fault, and corridor function. Still getting a seg fault.
+
+Date:   Mon Jan 22 05:36:12 2018 -0600
+
+    Worked on debugging
+
+Date:   Sat Jan 20 13:43:49 2018 -0600
+
+    Cleaned up code, making everything more streamlined and make more sense.
+
+Date:   Fri Jan 19 18:51:07 2018 -0600
+
+    Working on the random room generator, made the structs for the random room generator
+
+Date:   Thu Jan 18 00:29:00 2018 -0600
+
+    Started mucking about working on randomly generating a room
+
