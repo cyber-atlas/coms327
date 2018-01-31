@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#include <endian.h>
 
 
 //Makes the directory. Ignores the error that occurs if it walready exists.
@@ -8,12 +9,47 @@ int makeDirectory(){
 	mkdir ~/.
 }
 
+void reader(char *path){
+	//Still not sure about this next line, look into it some more
+	FILE *file;
+	//Saves the mode as rb for read bianry
+	char *mode = "rb";
+	file = fopen(char *filePath, char *mode);
+	if (file == NULL){
+		fprintf(stderr, "Could not open file");
+		exit(1);
+	}
+	
+	fread(file, 12,);
+
+}
+
+void writer(){
+	
+	FILE *file;
+
+
+
+}
 
 
 
 
+void dungeon (){
+	FILE *file;	
+}
 
-int main(){}
+
+
+int main(){
+	
+	//gets the lenght of the file name
+	//the +1 accounts for the null character
+	int length = strlen(getenv("HOME"))+strlen("/.rlg327/dungeon")+1;
+	//pointer to the string of the file name.
+	char *p = malloc(length *sizeof (char));
+	
+}
 
 
 
