@@ -1,0 +1,5 @@
+25 Jan 2018: Started planning out how I would implement everything
+27 Jan 2018: Starting writing a file reader and writer function. All of it was untested.
+28 Jan 2018: Continued writing a file reader and writer. Does not compile.
+29 Jan 2018: Started debugging the saving and loading of files.
+30 Jan 2018: Scraped the file reader and writer. Implemented the hardness. Will try to start to get at least working reader in the morning.

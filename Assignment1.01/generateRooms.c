@@ -198,6 +198,18 @@ void createCorridor(room a, room b){
 
 
 }
+
+void generateRockHardness(){
+
+	for (int i= 0; i < 21; i+1){
+		
+	
+	}
+
+
+}
+
+
 int main(){
 
 

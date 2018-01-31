@@ -225,8 +225,15 @@ void generateHardness(){
 
 }
 
+//Saves the dungeon, takes in the number of rooms that we have.
+void save(int numRooms){
+	
+	//there are 1700 initial bytes that we have to deal with + 4 bytes for each room
+	int size  = 1700 +(4*numRooms);
+	//TODO
 
 
+}
 
 
 int main(){
@@ -257,4 +264,3 @@ int main(){
 	return 0;
 
 }
-//TODO deal with the hardness of the rocks when that works

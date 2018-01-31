@@ -1,0 +1,5 @@
+Dungeon generator that generates rooms withing the dungeon. 5-10 rooms fit in each dungeon.
+The rooms are do not overlap at all and are all connected at the top left through a series of corridors.
+Everything else is a rock. 
+Everything has a hardness associated: rocks have a hardness of 1-254, rooms/corridors have a hardness of 0, borders are 255. 
+The dungeon can be saved and loaded.
