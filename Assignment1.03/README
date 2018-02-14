@@ -1,0 +1,15 @@
+The dungeon generater has been updated so that it creates rooms connected by corridors. 
+The corridors connect the rooms using a modified Dijkstra's algorithm.
+The dungeon generator, corridor generator, the Dijkstra's implementation, and the priority queue used by the algorithm were all provided by Dr Sheaffer. 
+I modified the corridor generation algorithm to calculate the cost of visiting each spot in the map.i
+The cost is based on the distance from the player and the hardness. There are different maps for tunneling (monsters that go through roc) and nontunneling monsters.
+The maps for the tunneling and nontunneling monsters are stored in the dungeon struct. 
+Then I created a dungeon printer that prints the hardness maps with the player placed on the map.
+To ensure that the player is placed correctly, I print the random unsued row, column, and the number that represents the type of terrain. The player is only placed in a room or corridor. 
+I print the player character before printing the tunneling and non tunneling arrays. 
+The output is:
+	The map
+	Unused player info
+	Tunneling dungeon info
+	Nontunneling dungeon info
+

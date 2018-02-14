@@ -1,0 +1,9 @@
+13 Feb 2018: Fixed the place player loop by looking into the check and how I am referencing things through pointers. Got everything working, wrote a README
+12 Feb 2018: Spoke to the professor, etag errors are fine because I don't use emacs, I use vim. The place player is infinite looping.
+10 Feb 2018: Added a dungeon printer, and made the tunneling hardness and the nontunneling hardness into different functions.
+8 Feb 2018: Still having issues generating the hardness, adding the rest of the professors code to build off of.
+5 Feb 2018: working off the code base provided. Added a place player. Have an etags error to fix and some todos to work on
+
+4 Feb 2018: Worked on the heap code
+
+2 Feb 2018: Tried to get started. I added the Dijkstra's from the corridor generator
