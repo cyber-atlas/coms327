@@ -18,6 +18,30 @@ void usage(char *name)
   exit(-1);
 }
 
+//Creates a monster using a hex value to deal with it's different attributes.
+//TODO generate monster
+//TODO generate way to hold the monsters
+void monsterMash{
+
+	
+}
+
+//Moves the player position a max of 1 unit in any given direction if the terrain is a room or corridor
+void movePC(pc_t player, dungeon_t *d){
+	
+	srand(time(NULL));
+	//Randomly decides whether the player is going to take a step in a direction
+	yrand = rand() % 3 -1;
+	xrand = rand() % 3 -1;
+	//Makes sure that step is valid by checking terrain vlaue and making sure it is not a rock or object that the player cannot go on if it allowed, changed the values in the position array
+	if((d->map[player.position[dim_x] + xrand][player.position[dim_y]+yrand]) >= ter_floor ){
+	
+		player.position[dim_x] = player.position[dim_x] + xrand;
+		player.position[dim_y] = player.position[dim_y] + yrand;
+	}
+
+}
+
 int main(int argc, char *argv[])
 {
   dungeon_t d;
