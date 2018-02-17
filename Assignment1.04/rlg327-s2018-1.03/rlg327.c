@@ -21,10 +21,14 @@ void usage(char *name)
 //Creates a monster using a hex value to deal with it's different attributes.
 //TODO generate monster
 //TODO generate way to hold the monsters
-void monsterMash{
+//Creates the monsters, randomly assigns the attirubtes needed. 50% chance of each.
+typedef struct monsterMash{
 
-	
-}
+	int intelligence = rand()%2;
+	int telepathy = rand()%2;
+int tunneling_ability = rand()%2;
+	int erratic_behavior = rand()2;
+}monsterMash
 
 //Moves the player position a max of 1 unit in any given direction if the terrain is a room or corridor
 void movePC(pc_t player, dungeon_t *d){
