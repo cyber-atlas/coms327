@@ -18,6 +18,15 @@ void usage(char *name)
   exit(-1);
 }
 
+//TODO  insteasd of a sturct to hold the abilities like that, create an array in the monster mash struct that holds the info
+//TODO create a function to manipulate  the abilities aspect of the monster mash struct. 
+void setMonsterAbilities(monsterMash monster){
+	
+	
+}
+	
+
+
 //Creates a monster using a hex value to deal with it's different attributes.
 //TODO generate monster
 //TODO generate way to hold the monsters
@@ -26,9 +35,9 @@ typedef struct monsterMash{
 
 	int intelligence = rand()%2;
 	int telepathy = rand()%2;
-int tunneling_ability = rand()%2;
+	int tunneling_ability = rand()%2;
 	int erratic_behavior = rand()2;
-}monsterMash
+}monster
 
 //Moves the player position a max of 1 unit in any given direction if the terrain is a room or corridor
 void movePC(pc_t player, dungeon_t *d){
