@@ -1,0 +1,4 @@
+This code has a switch nummon. Nummon reads in the number of monsters that are to be in the array.
+The program then generates nummon monsters.
+Monsters are made in the monster_t struct. Monsters have a set of abilities: intelligence, telepathy, tunneling ability, erratic behavoir. 
+Those decide whether the monsters know how to move on the shortest path, know where the player is, can tunnel through walls, erratic 

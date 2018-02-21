@@ -56,7 +56,10 @@ typedef struct dungeon {
   uint8_t hardness[DUNGEON_Y][DUNGEON_X];
   uint8_t pc_distance[DUNGEON_Y][DUNGEON_X];
   uint8_t pc_tunnel[DUNGEON_Y][DUNGEON_X];
+  //Just holds the current position of the PC
   pc_t pc;
+  //TODO add variable to hold the previous pc terrain type
+  
 } dungeon_t;
 
 void init_dungeon(dungeon_t *d);

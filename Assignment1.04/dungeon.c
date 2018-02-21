@@ -36,7 +36,6 @@ static uint32_t in_room(dungeon_t *d, int16_t y, int16_t x)
   return 0;
 }
 */
-
 static uint32_t adjacent_to_room(dungeon_t *d, int16_t y, int16_t x)
 {
   return (mapxy(x - 1, y) == ter_floor_room ||
