@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ncurses.h>
 
 #include "string.h"
 
@@ -7,6 +8,8 @@
 #include "utils.h"
 #include "move.h"
 #include "path.h"
+#include "npc.h"
+
 
 void pc_delete(pc_t *pc)
 {
@@ -53,101 +56,111 @@ void config_pc(dungeon_t *d)
 //TODO make a swithc to move the character based on the list of movement that was given in the doc
 uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
 {
-  static uint32_t have_seen_corner = 0;
-  static uint32_t count = 0;
+ //TODO what is this and how do I deal with it?	
+ // static uint32_t have_seen_corner = 0;
+ // static uint32_t count = 0;
 
   dir[dim_y] = dir[dim_x] = 0;
+	
+  	int input;
+	int conti=1;
 
-  if (in_corner(d, &d->pc)) {
-    if (!count) {
-      count = 1;
-    }
-    have_seen_corner = 1;
-  }
+	nodelay(stdscr, TRUE);
+  do{
+	switch(input = getch()){
+		case '7':
+		case 'y':
+			dir[dim_y] = -1;
+			dir[dim_x]= -1;
+			conti =0;
+			break;
+		case'8':
+		case 'k':
+			dir [dim_y] =-1;
+			conti =0;
+			break;
+		case'9':
+		case'u':
+			dir [dim_y] = -1;
+			dir [dim_x] =+1;
+			conti=0;
+			break;
+		case'6':
+		case'l':
+			dir[dim_x]=+1;
+			conti=0;
+			break;
+		case '3':
+		case'n': 
+			dir[dim_y] =+1;
+			dir[dim_x] =+1;
+			conti=0;
+			break;
+		case '2':
+		case 'j':
+			dir[dim_y] = +1;
+			conti=0;
+			break;
 
-  /* First, eat anybody standing next to us. */
-  if (charxy(d->pc.position[dim_x] - 1, d->pc.position[dim_y] - 1)) {
-    dir[dim_y] = -1;
-    dir[dim_x] = -1;
-  } else if (charxy(d->pc.position[dim_x], d->pc.position[dim_y] - 1)) {
-    dir[dim_y] = -1;
-  } else if (charxy(d->pc.position[dim_x] + 1, d->pc.position[dim_y] - 1)) {
-    dir[dim_y] = -1;
-    dir[dim_x] = 1;
-  } else if (charxy(d->pc.position[dim_x] - 1, d->pc.position[dim_y])) {
-    dir[dim_x] = -1;
-  } else if (charxy(d->pc.position[dim_x] + 1, d->pc.position[dim_y])) {
-    dir[dim_x] = 1;
-  } else if (charxy(d->pc.position[dim_x] - 1, d->pc.position[dim_y] + 1)) {
-    dir[dim_y] = 1;
-    dir[dim_x] = -1;
-  } else if (charxy(d->pc.position[dim_x], d->pc.position[dim_y] + 1)) {
-    dir[dim_y] = 1;
-  } else if (charxy(d->pc.position[dim_x] + 1, d->pc.position[dim_y] + 1)) {
-    dir[dim_y] = 1;
-    dir[dim_x] = 1;
-  } else if (!have_seen_corner || count < 250) {
-    /* Head to a corner and let most of the NPCs kill each other off */
-    if (count) {
-      count++;
-    }
-    if (!against_wall(d, &d->pc) && ((rand() & 0x111) == 0x111)) {
-      dir[dim_x] = (rand() % 3) - 1;
-      dir[dim_y] = (rand() % 3) - 1;
-    } else {
-      dir_nearest_wall(d, &d->pc, dir);
-    }
-  }else {
-    /* And after we've been there, let's head toward the center of the map. */
-    if (!against_wall(d, &d->pc) && ((rand() & 0x111) == 0x111)) {
-      dir[dim_x] = (rand() % 3) - 1;
-      dir[dim_y] = (rand() % 3) - 1;
-    } else {
-      dir[dim_x] = ((d->pc.position[dim_x] > DUNGEON_X / 2) ? -1 : 1);
-      dir[dim_y] = ((d->pc.position[dim_y] > DUNGEON_Y / 2) ? -1 : 1);
-    }
-  }
+		case '1':
+		case 'b':
+			dir[dim_y] = 1;
+			dir[dim_x] = -1;
+			conti = 0;
+			break;
+		case '4':
+		case 'h':
+			dir[dim_x] = -1;
+			conti = 0;
+			break;
+		case '5':
+		case ' ':
+			dir[dim_y] = 0;
+			dir[dim_x] = 0;
+			conti = 0;
+			break;
+		case '>':
 
-  /* Don't move to an unoccupied location if that places us next to a monster */
-  if (!charxy(d->pc.position[dim_x] + dir[dim_x],
-              d->pc.position[dim_y] + dir[dim_y]) &&
-      ((charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-               d->pc.position[dim_y] + dir[dim_y] - 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-                d->pc.position[dim_y] + dir[dim_y] - 1) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-               d->pc.position[dim_y] + dir[dim_y]) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-                d->pc.position[dim_y] + dir[dim_y]) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-               d->pc.position[dim_y] + dir[dim_y] + 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] - 1,
-                d->pc.position[dim_y] + dir[dim_y] + 1) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x],
-               d->pc.position[dim_y] + dir[dim_y] - 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x],
-                d->pc.position[dim_y] + dir[dim_y] - 1) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x],
-               d->pc.position[dim_y] + dir[dim_y] + 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x],
-                d->pc.position[dim_y] + dir[dim_y] + 1) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-               d->pc.position[dim_y] + dir[dim_y] - 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-                d->pc.position[dim_y] + dir[dim_y] - 1) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-               d->pc.position[dim_y] + dir[dim_y]) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-                d->pc.position[dim_y] + dir[dim_y]) != &d->pc)) ||
-       (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-               d->pc.position[dim_y] + dir[dim_y] + 1) &&
-        (charxy(d->pc.position[dim_x] + dir[dim_x] + 1,
-                d->pc.position[dim_y] + dir[dim_y] + 1) != &d->pc)))) {
-    dir[dim_x] = dir[dim_y] = 0;
-  }
+			if ((d->rooms->position[dim_x] == d->pc.position[dim_x]) && (d->rooms->position[dim_y] == d->pc.position[dim_y])) {
+				delete_dungeon(d);
+				init_dungeon(d);
+				gen_dungeon(d);
+				config_pc(d);
+				gen_monsters(d);
+				render_dungeon(d);
+			}
+			break;
+		case '<':
+			if ((d->rooms->position[dim_x] == d->pc.position[dim_x]) && (d->rooms->position[dim_y] + 1 == d->pc.position[dim_y])) {
+				delete_dungeon(d);
+				init_dungeon(d);
+				gen_dungeon(d);
+				config_pc(d);
+				gen_monsters(d);
+				render_dungeon(d);
+			}
+			break;
+		case 'Q':
+			endwin();
+			conti = 0;
+			break;
+		case 'm':
+			//monster_list(d);
+			break;
+		default:
+			continue;
+
+	}
+
+  } while (conti);
+
 
   return 0;
-}
+  		
+	}
+  
+  
+  
 
 uint32_t pc_in_room(dungeon_t *d, uint32_t room)
 {

@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include <limits.h>
 #include <errno.h>
-//TODO include ncurses?
+#include <ncurses.h>
 
 #include "dungeon.h"
 #include "utils.h"
@@ -21,6 +21,7 @@ typedef struct corridor_path {
   int32_t cost;
 } corridor_path_t;
 
+/*
 //checks to see if a certain x, y pair is in a room or now. returns 1 if in a room 0 otherwise
 static uint32_t in_room(dungeon_t *d, int16_t y, int16_t x)
 {
@@ -28,7 +29,7 @@ static uint32_t in_room(dungeon_t *d, int16_t y, int16_t x)
 
   for (i = 0; i < d->num_rooms; i++) {
     if ((x >= d->rooms[i].position[dim_x]) &&
-        (x < (d->rooms[i].position[dim_x] + d->rooms[i].size[dim_x])) &&
+        (x < (dh->rooms[i].position[dim_x] + d->rooms[i].size[dim_x])) &&
         (y >= d->rooms[i].position[dim_y]) &&
         (y < (d->rooms[i].position[dim_y] + d->rooms[i].size[dim_y]))) {
       return 1;
@@ -37,7 +38,7 @@ static uint32_t in_room(dungeon_t *d, int16_t y, int16_t x)
 
   return 0;
 }
-
+*/
 static uint32_t adjacent_to_room(dungeon_t *d, int16_t y, int16_t x)
 {
   return (mapxy(x - 1, y) == ter_floor_room ||
