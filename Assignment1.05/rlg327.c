@@ -73,6 +73,15 @@ void usage(char *name)
   exit(-1);
 }
 
+//Initializes the screen and reads in from the terminal
+void read_in(){
+	initscr();
+	raw(); //characters are immediately passed in
+	noecho();//does not repeat the entered characters
+	curs_set(0);
+	keypad (stdscr, TRUE);
+}
+
 int main(int argc, char *argv[])
 {
   dungeon_t d;
@@ -218,6 +227,7 @@ int main(int argc, char *argv[])
   }
   srand(seed);
 
+  read_in();
   init_dungeon(&d);
 
   if (do_load) {
@@ -234,7 +244,7 @@ int main(int argc, char *argv[])
   while (pc_is_alive(&d) && dungeon_has_npcs(&d)) {
     render_dungeon(&d);
     do_moves(&d);
-    usleep(33000);
+   // usleep(33000);
   }
 
   render_dungeon(&d);
