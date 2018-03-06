@@ -272,6 +272,7 @@ int main(int argc, char *argv[])
       free(save_file);
     }
   }
+  endwin();
 
   printf("%s", pc_is_alive(&d) ? victory : tombstone);
   printf("You defended your life in the face of %u deadly beasts.\n"
@@ -282,6 +283,8 @@ int main(int argc, char *argv[])
   pc_delete(d.pc.pc);
 
   delete_dungeon(&d);
-
+	
+  //Ends the ncurses window
+//  endwin();
   return 0;
 }

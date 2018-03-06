@@ -103,11 +103,25 @@ void do_moves(dungeon_t *d)
      * and recreated every time we leave and re-enter this function.    */
     e->c = NULL;
     event_delete(e);
-    pc_next_pos(d, next);
-    next[dim_x] += c->position[dim_x];
-    next[dim_y] += c->position[dim_y];
+    //TODO do while loop. Checks if the new position is a wall. If it is a rock, <ter_floor loops again
+   // pc_next_pos(d, next);
+
+    do{
+
+   	 pc_next_pos(d, next);
+	 next[dim_x] += c->position[dim_x];
+    	next[dim_y] += c->position[dim_y];
+	
+//	if (next < ter_floor){break;}
+ 
+    
+    }while(mappair(next) < ter_floor);
+
+   // next[dim_x] += c->position[dim_x];
+   // next[dim_y] += c->position[dim_y];
     if (mappair(next) <= ter_floor) {
-      mappair(next) = ter_floor_hall;
+      //mappair(next) = ter_floor_hall;
+     //return; 
     }
     move_character(d, c, next);
 
