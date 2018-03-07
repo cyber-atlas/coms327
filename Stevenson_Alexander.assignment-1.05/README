@@ -1,0 +1,4 @@
+This week I added functionality that allowed for the player to be moved according to a series of keys provided in the spec. 
+The plater can traverse through multiple floors, can no longer tunnel, and is killed when a monster gets to him first. 
+The Q button when held for a little while quits the game.
+The game is now rendered in ncurses. 
