@@ -1,0 +1,35 @@
+
+Date:   Tue Mar 6 21:49:30 2018 -0600
+
+    There are now multiple floors that can be traversed
+
+
+Date:   Tue Mar 6 13:57:28 2018 -0600
+
+    Went to office hours, got the character to longer create hallways and got the pc to stop when he gets to rock.
+
+Date:   Mon Mar 5 21:19:28 2018 -0600
+
+    Ncurses prints stuff, the player moves, but the walls do nothing. Also, need to work on generating multiple levels of dungeons.
+
+
+Date:   Mon Mar 5 19:18:41 2018 -0600
+
+    NcChanged the makefile so ncurses works now, but nothing displays. But hey, progress
+
+
+Date:   Mon Mar 5 17:37:40 2018 -0600
+
+    Added the switch statement for the monsters to move and handled some issues that arose with that. For some reason ncurses refuses to work.
+
+
+
+
+Date:   Fri Mar 2 05:11:19 2018 -0600
+
+    Changed alot of putchars to ncurses mvaddch in the dungeon file, added some some TODOs
+
+
+Date:   Fri Mar 2 05:10:41 2018 -0600
+
+    Changed alot of putchars to ncurses mvaddch in the dungeon file, added some some TODOs
