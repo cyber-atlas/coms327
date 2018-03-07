@@ -138,6 +138,7 @@ uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
 			//TODO look at how to fix the quit
 		case 'Q':
 			endwin();
+			exit(1);
 			conti = 0;
 			break;
 		case 'm':
