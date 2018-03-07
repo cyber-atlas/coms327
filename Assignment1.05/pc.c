@@ -53,13 +53,8 @@ void config_pc(dungeon_t *d)
   dijkstra_tunnel(d);
 }
 
-//TODO make a swithc to move the character based on the list of movement that was given in the doc
 uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
 {
- //TODO what is this and how do I deal with it?	
- // static uint32_t have_seen_corner = 0;
- // static uint32_t count = 0;
-
   dir[dim_y] = dir[dim_x] = 0;
 	
   	int input;
@@ -140,6 +135,7 @@ uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
 				render_dungeon(d);
 			}
 			break;
+			//TODO look at how to fix the quit
 		case 'Q':
 			endwin();
 			conti = 0;
