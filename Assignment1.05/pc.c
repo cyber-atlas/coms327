@@ -135,7 +135,6 @@ uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
 				render_dungeon(d);
 			}
 			break;
-			//TODO look at how to fix the quit
 		case 'Q':
 			endwin();
 			exit(1);
@@ -155,7 +154,6 @@ uint32_t pc_next_pos(dungeon_t *d, pair_t dir)
   return 0;
   		
 	}
-  
   
   
 
