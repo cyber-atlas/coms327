@@ -86,7 +86,7 @@ extern "C" {
    }                                                                       \
 /*   dmalloc(_tmp);*/                                                      \
    bzero(_tmp, size);                                                      \
-   (char *) _tmp;                                                                   \
+   _tmp;                                                                   \
 })
 
 #  define calloc(nmemb, size) ({                                           \
