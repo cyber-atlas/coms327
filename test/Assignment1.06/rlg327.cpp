@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
   dungeon_t d;
   time_t seed;
   struct timeval tv;
-  uint32_t i;
+  int32_t i;//Changed this from unsigned it to int to get rid of an error
   uint32_t do_load, do_save, do_seed, do_image, do_save_seed,
            do_save_image, do_place_pc;
   uint32_t long_arg;
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
   if (do_save) {
     if (do_save_seed) {
        /* 10 bytes for number, please dot, extention and null terminator. */
-      save_file = malloc(18);
+      save_file = (char *) malloc(18);
       sprintf(save_file, "%ld.rlg327", seed);
     }
     if (do_save_image) {
