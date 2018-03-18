@@ -18,37 +18,37 @@
 void do_combat(dungeon_t *d, character_t *atk, character_t *def)
 {
   int can_see_atk, can_see_def;
-  char *organs[] = {
-    "liver",                   /*  0 */
-    "pancreas",                /*  1 */
-    "heart",                   /*  2 */
-    "eye",                     /*  3 */
-    "arm",                     /*  4 */
-    "leg",                     /*  5 */
-    "intestines",              /*  6 */
-    "gall bladder",            /*  7 */
-    "lungs",                   /*  8 */
-    "hand",                    /*  9 */
-    "foot",                    /* 10 */
-    "spinal cord",             /* 11 */
-    "pituitary gland",         /* 12 */
-    "thyroid",                 /* 13 */
-    "tongue",                  /* 14 */
-    "bladder",                 /* 15 */
-    "diaphram",                /* 16 */
-    "stomach",                 /* 17 */
-    "pharynx",                 /* 18 */
-    "esophagus",               /* 19 */
-    "trachea",                 /* 20 */
-    "urethra",                 /* 21 */
-    "spleen",                  /* 22 */
-    "ganglia",                 /* 23 */
-    "ear",                     /* 24 */
-    "subcutaneous tissue"      /* 25 */
-    "cerebellum",              /* 26 */ /* Brain parts begin here */
-    "hippocampus",             /* 27 */
-    "frontal lobe",            /* 28 */
-    "brain",                   /* 29 */
+  const char *organs[] = {
+    (char*) "liver",                   /*  0 */
+     (char*) "(character_t*) pancreas",                /*  1 */
+     (char*) "heart",                   /*  2 */
+  (char*)    "eye",                     /*  3 */
+  (char*)    "arm",                     /*  4 */
+  (char*)    "leg",                     /*  5 */
+  (char*)    "intestines",              /*  6 */
+  (char*)    "gall bladder",            /*  7 */
+  (char*)    "lungs",                   /*  8 */
+  (char*)    "hand",                    /*  9 */
+  (char*)    "foot",                    /* 10 */
+  (char*)    "spinal cord",             /* 11 */
+  (char*)    "pituitary gland",         /* 12 */
+  (char*)    "thyroid",                 /* 13 */
+  (char*)    "tongue",                  /* 14 */
+  (char*)    "bladder",                 /* 15 */
+  (char*)    "diaphram",                /* 16 */
+  (char*)    "stomach",                 /* 17 */
+  (char*)    "pharynx",                 /* 18 */
+  (char*)    "esophagus",               /* 19 */
+  (char*)    "trachea",                 /* 20 */
+  (char*)    "urethra",                 /* 21 */
+  (char*)    "spleen",                  /* 22 */
+  (char*)    "ganglia",                 /* 23 */
+  (char*)    "ear",                     /* 24 */
+  (char*)    "subcutaneous tissue"      /* 25 */
+ "cerebellum",              /* 26 */ /* Brain parts begin here */
+  "hippocampus",             /* 27 */
+  "frontal lobe",            /* 28 */
+  "brain",                   /* 29 */
   };
   int part;
 
@@ -129,7 +129,7 @@ void do_moves(dungeon_t *d)
     /* The PC always goes first one a tie, so we don't use new_event().  *
      * We generate one manually so that we can set the PC sequence       *
      * number to zero.                                                   */
-    e = malloc(sizeof (*e));
+    e = (event_t*)malloc(sizeof (*e));
     e->type = event_character_turn;
     /* Hack: New dungeons are marked.  Unmark and ensure PC goes at d->time, *
      * otherwise, monsters get a turn before the PC.                         */
@@ -145,7 +145,7 @@ void do_moves(dungeon_t *d)
   }
 
   while (pc_is_alive(d) &&
-         (e = heap_remove_min(&d->events)) &&
+         (e = (event_t*) heap_remove_min (&d->events)) &&
          ((e->type != event_character_turn) || (e->c != &d->pc))) {
     d->time = e->time;
     if (e->type == event_character_turn) {
