@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
 	do_save_image = 0;
       } else {
 	/* Extension of 3 characters longer than image extension + null. */
-	save_file = malloc(strlen(pgm_file) + 4);
+	save_file = (char *) malloc(strlen(pgm_file) + 4);
 	strcpy(save_file, pgm_file);
 	strcpy(strchr(save_file, '.') + 1, "rlg327");
       }
@@ -264,6 +264,7 @@ int main(int argc, char *argv[])
   }
 
   printf("%s", pc_is_alive(&d) ? victory : tombstone);
+  //TODO take a look at this
   printf("You defended your life in the face of %u deadly beasts.\n"
          "You avenged the cruel and untimely murders of %u "
          "peaceful dungeon residents.\n",
