@@ -1,0 +1,334 @@
+Compiling rlg327.cpp
+In file included from dungeon.h:7:0,
+                 from rlg327.cpp:8:
+character.h:8:15: error: aggregate ‘dungeon dungeon_t’ has incomplete type and cannot be defined
+ class dungeon dungeon_t;
+               ^
+character.h:9:11: error: aggregate ‘npc npc_t’ has incomplete type and cannot be defined
+ class npc npc_t;
+           ^
+character.h:10:10: error: aggregate ‘pc pc_t’ has incomplete type and cannot be defined
+ class pc pc_t;
+          ^
+character.h:11:14: error: aggregate ‘dice_t dice_t’ has incomplete type and cannot be defined
+ class dice_t dice_t;
+              ^
+character.h:32:3: error: ‘npc_t’ does not name a type
+   npc_t *npc;
+   ^
+character.h:33:3: error: ‘pc_t’ does not name a type
+   pc_t *pc;
+   ^
+character.h:39:29: error: ‘d’ was not declared in this scope
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                             ^
+character.h:39:32: error: ‘character_t’ was not declared in this scope
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                                ^
+character.h:39:45: error: ‘voyeur’ was not declared in this scope
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                                             ^
+character.h:39:53: error: ‘character_t’ was not declared in this scope
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                                                     ^
+character.h:39:66: error: ‘exhibitionist’ was not declared in this scope
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                                                                  ^
+character.h:39:79: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t can_see(dungeon_t *d, character_t *voyeur, character_t *exhibitionist);
+                                                                               ^
+In file included from rlg327.cpp:8:0:
+dungeon.h:51:3: error: ‘room_t’ does not name a type
+   room_t *rooms;
+   ^
+dungeon.h:64:3: error: ‘character_t’ does not name a type
+   character_t *character[DUNGEON_Y][DUNGEON_X];
+   ^
+dungeon.h:65:3: error: ‘character_t’ does not name a type
+   character_t pc;
+   ^
+dungeon.h:80:19: error: variable or field ‘init_dungeon’ declared void
+ void init_dungeon(dungeon_t *d);
+                   ^
+dungeon.h:80:30: error: ‘d’ was not declared in this scope
+ void init_dungeon(dungeon_t *d);
+                              ^
+dungeon.h:81:18: error: variable or field ‘new_dungeon’ declared void
+ void new_dungeon(dungeon_t *d);
+                  ^
+dungeon.h:81:29: error: ‘d’ was not declared in this scope
+ void new_dungeon(dungeon_t *d);
+                             ^
+dungeon.h:82:21: error: variable or field ‘delete_dungeon’ declared void
+ void delete_dungeon(dungeon_t *d);
+                     ^
+dungeon.h:82:32: error: ‘d’ was not declared in this scope
+ void delete_dungeon(dungeon_t *d);
+                                ^
+dungeon.h:83:28: error: ‘d’ was not declared in this scope
+ int gen_dungeon(dungeon_t *d);
+                            ^
+dungeon.h:84:21: error: variable or field ‘render_dungeon’ declared void
+ void render_dungeon(dungeon_t *d);
+                     ^
+dungeon.h:84:32: error: ‘d’ was not declared in this scope
+ void render_dungeon(dungeon_t *d);
+                                ^
+dungeon.h:85:30: error: ‘d’ was not declared in this scope
+ int write_dungeon(dungeon_t *d, char *file);
+                              ^
+dungeon.h:85:33: error: expected primary-expression before ‘char’
+ int write_dungeon(dungeon_t *d, char *file);
+                                 ^
+dungeon.h:85:43: error: expression list treated as compound expression in initializer [-fpermissive]
+ int write_dungeon(dungeon_t *d, char *file);
+                                           ^
+dungeon.h:86:29: error: ‘d’ was not declared in this scope
+ int read_dungeon(dungeon_t *d, char *file);
+                             ^
+dungeon.h:86:32: error: expected primary-expression before ‘char’
+ int read_dungeon(dungeon_t *d, char *file);
+                                ^
+dungeon.h:86:42: error: expression list treated as compound expression in initializer [-fpermissive]
+ int read_dungeon(dungeon_t *d, char *file);
+                                          ^
+dungeon.h:87:25: error: ‘d’ was not declared in this scope
+ int read_pgm(dungeon_t *d, char *pgm);
+                         ^
+dungeon.h:87:28: error: expected primary-expression before ‘char’
+ int read_pgm(dungeon_t *d, char *pgm);
+                            ^
+dungeon.h:87:37: error: expression list treated as compound expression in initializer [-fpermissive]
+ int read_pgm(dungeon_t *d, char *pgm);
+                                     ^
+dungeon.h:88:26: error: variable or field ‘render_distance_map’ declared void
+ void render_distance_map(dungeon_t *d);
+                          ^
+dungeon.h:88:37: error: ‘d’ was not declared in this scope
+ void render_distance_map(dungeon_t *d);
+                                     ^
+dungeon.h:89:33: error: variable or field ‘render_tunnel_distance_map’ declared void
+ void render_tunnel_distance_map(dungeon_t *d);
+                                 ^
+dungeon.h:89:44: error: ‘d’ was not declared in this scope
+ void render_tunnel_distance_map(dungeon_t *d);
+                                            ^
+In file included from rlg327.cpp:9:0:
+pc.h:13:16: error: variable or field ‘pc_delete’ declared void
+ void pc_delete(pc_t *pc);
+                ^
+pc.h:13:24: error: expected primary-expression before ‘)’ token
+ void pc_delete(pc_t *pc);
+                        ^
+pc.h:14:33: error: ‘d’ was not declared in this scope
+ uint32_t pc_is_alive(dungeon_t *d);
+                                 ^
+pc.h:15:16: error: variable or field ‘config_pc’ declared void
+ void config_pc(dungeon_t *d);
+                ^
+pc.h:15:27: error: ‘d’ was not declared in this scope
+ void config_pc(dungeon_t *d);
+                           ^
+pc.h:16:33: error: ‘d’ was not declared in this scope
+ uint32_t pc_next_pos(dungeon_t *d, pair_t dir);
+                                 ^
+pc.h:16:43: error: expected primary-expression before ‘dir’
+ uint32_t pc_next_pos(dungeon_t *d, pair_t dir);
+                                           ^
+pc.h:16:46: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t pc_next_pos(dungeon_t *d, pair_t dir);
+                                              ^
+pc.h:17:15: error: variable or field ‘place_pc’ declared void
+ void place_pc(dungeon_t *d);
+               ^
+pc.h:17:26: error: ‘d’ was not declared in this scope
+ void place_pc(dungeon_t *d);
+                          ^
+pc.h:18:32: error: ‘d’ was not declared in this scope
+ uint32_t pc_in_room(dungeon_t *d, uint32_t room);
+                                ^
+pc.h:18:44: error: expected primary-expression before ‘room’
+ uint32_t pc_in_room(dungeon_t *d, uint32_t room);
+                                            ^
+pc.h:18:48: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t pc_in_room(dungeon_t *d, uint32_t room);
+                                                ^
+In file included from rlg327.cpp:10:0:
+npc.h:49:25: error: field ‘characteristics’ has incomplete type ‘npc_characteristics_t’
+   npc_characteristics_t characteristics;
+                         ^
+npc.h:46:7: note: forward declaration of ‘class npc_characteristics_t’
+ class npc_characteristics_t;
+       ^
+npc.h:55:19: error: variable or field ‘gen_monsters’ declared void
+ void gen_monsters(dungeon_t *d);
+                   ^
+npc.h:55:30: error: ‘d’ was not declared in this scope
+ void gen_monsters(dungeon_t *d);
+                              ^
+npc.h:56:17: error: variable or field ‘npc_delete’ declared void
+ void npc_delete(npc_t *n);
+                 ^
+npc.h:56:24: error: ‘n’ was not declared in this scope
+ void npc_delete(npc_t *n);
+                        ^
+npc.h:57:19: error: variable or field ‘npc_next_pos’ declared void
+ void npc_next_pos(dungeon_t *d, character_t *c, pair_t next);
+                   ^
+npc.h:57:30: error: ‘d’ was not declared in this scope
+ void npc_next_pos(dungeon_t *d, character_t *c, pair_t next);
+                              ^
+npc.h:57:46: error: ‘c’ was not declared in this scope
+ void npc_next_pos(dungeon_t *d, character_t *c, pair_t next);
+                                              ^
+npc.h:57:56: error: expected primary-expression before ‘next’
+ void npc_next_pos(dungeon_t *d, character_t *c, pair_t next);
+                                                        ^
+npc.h:58:38: error: ‘d’ was not declared in this scope
+ uint32_t dungeon_has_npcs(dungeon_t *d);
+                                      ^
+In file included from rlg327.cpp:11:0:
+move.h:9:17: error: redefinition of ‘character character_t’
+ class character character_t;
+                 ^
+In file included from rlg327.cpp:10:0:
+npc.h:45:17: note: ‘character character_t’ previously declared here
+ class character character_t;
+                 ^
+In file included from rlg327.cpp:11:0:
+move.h:11:16: error: variable or field ‘next_move’ declared void
+ void next_move(dungeon_t *d,
+                ^
+move.h:11:27: error: ‘d’ was not declared in this scope
+ void next_move(dungeon_t *d,
+                           ^
+move.h:12:29: error: ‘c’ was not declared in this scope
+                character_t *c,
+                             ^
+move.h:13:23: error: expected primary-expression before ‘goal_pos’
+                pair_t goal_pos,
+                       ^
+move.h:14:23: error: expected primary-expression before ‘next_pos’
+                pair_t next_pos);
+                       ^
+move.h:15:15: error: variable or field ‘do_moves’ declared void
+ void do_moves(dungeon_t *d);
+               ^
+move.h:15:26: error: ‘d’ was not declared in this scope
+ void do_moves(dungeon_t *d);
+                          ^
+move.h:16:23: error: variable or field ‘dir_nearest_wall’ declared void
+ void dir_nearest_wall(dungeon_t *d, character_t *c, pair_t dir);
+                       ^
+move.h:16:34: error: ‘d’ was not declared in this scope
+ void dir_nearest_wall(dungeon_t *d, character_t *c, pair_t dir);
+                                  ^
+move.h:16:50: error: ‘c’ was not declared in this scope
+ void dir_nearest_wall(dungeon_t *d, character_t *c, pair_t dir);
+                                                  ^
+move.h:16:60: error: expected primary-expression before ‘dir’
+ void dir_nearest_wall(dungeon_t *d, character_t *c, pair_t dir);
+                                                            ^
+move.h:17:31: error: ‘d’ was not declared in this scope
+ uint32_t in_corner(dungeon_t *d, character_t *c);
+                               ^
+move.h:17:47: error: ‘c’ was not declared in this scope
+ uint32_t in_corner(dungeon_t *d, character_t *c);
+                                               ^
+move.h:17:48: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t in_corner(dungeon_t *d, character_t *c);
+                                                ^
+move.h:18:34: error: ‘d’ was not declared in this scope
+ uint32_t against_wall(dungeon_t *d, character_t *c);
+                                  ^
+move.h:18:50: error: ‘c’ was not declared in this scope
+ uint32_t against_wall(dungeon_t *d, character_t *c);
+                                                  ^
+move.h:18:51: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t against_wall(dungeon_t *d, character_t *c);
+                                                   ^
+move.h:19:29: error: ‘d’ was not declared in this scope
+ uint32_t move_pc(dungeon_t *d, uint32_t dir);
+                             ^
+move.h:19:41: error: expected primary-expression before ‘dir’
+ uint32_t move_pc(dungeon_t *d, uint32_t dir);
+                                         ^
+move.h:19:44: error: expression list treated as compound expression in initializer [-fpermissive]
+ uint32_t move_pc(dungeon_t *d, uint32_t dir);
+                                            ^
+move.h:20:21: error: variable or field ‘move_character’ declared void
+ void move_character(dungeon_t *d, character_t *c, pair_t next);
+                     ^
+move.h:20:32: error: ‘d’ was not declared in this scope
+ void move_character(dungeon_t *d, character_t *c, pair_t next);
+                                ^
+move.h:20:48: error: ‘c’ was not declared in this scope
+ void move_character(dungeon_t *d, character_t *c, pair_t next);
+                                                ^
+move.h:20:58: error: expected primary-expression before ‘next’
+ void move_character(dungeon_t *d, character_t *c, pair_t next);
+                                                          ^
+In file included from rlg327.cpp:12:0:
+io.h:8:17: error: variable or field ‘io_display’ declared void
+ void io_display(dungeon_t *d);
+                 ^
+io.h:8:28: error: ‘d’ was not declared in this scope
+ void io_display(dungeon_t *d);
+                            ^
+io.h:9:22: error: variable or field ‘io_handle_input’ declared void
+ void io_handle_input(dungeon_t *d);
+                      ^
+io.h:9:33: error: ‘d’ was not declared in this scope
+ void io_handle_input(dungeon_t *d);
+                                 ^
+rlg327.cpp: In function ‘int main(int, char**)’:
+rlg327.cpp:79:13: error: expected ‘;’ before ‘d’
+   dungeon_t d;
+             ^
+rlg327.cpp:90:11: error: ‘d’ was not declared in this scope
+   memset(&d, 0, sizeof (d));
+           ^
+rlg327.cpp:220:18: error: ‘init_dungeon’ was not declared in this scope
+   init_dungeon(&d);
+                  ^
+rlg327.cpp:223:31: error: ‘read_dungeon’ cannot be used as a function
+     read_dungeon(&d, load_file);
+                               ^
+rlg327.cpp:225:26: error: ‘read_pgm’ cannot be used as a function
+     read_pgm(&d, pgm_file);
+                          ^
+rlg327.cpp:227:19: error: ‘gen_dungeon’ cannot be used as a function
+     gen_dungeon(&d);
+                   ^
+rlg327.cpp:230:15: error: ‘config_pc’ was not declared in this scope
+   config_pc(&d);
+               ^
+rlg327.cpp:231:18: error: ‘gen_monsters’ was not declared in this scope
+   gen_monsters(&d);
+                  ^
+rlg327.cpp:233:16: error: ‘io_display’ was not declared in this scope
+   io_display(&d);
+                ^
+rlg327.cpp:235:24: error: ‘pc_is_alive’ cannot be used as a function
+   while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
+                        ^
+rlg327.cpp:235:48: error: ‘dungeon_has_npcs’ cannot be used as a function
+   while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
+                                                ^
+rlg327.cpp:236:16: error: ‘do_moves’ was not declared in this scope
+     do_moves(&d);
+                ^
+rlg327.cpp:259:32: error: ‘write_dungeon’ cannot be used as a function
+     write_dungeon(&d, save_file);
+                                ^
+rlg327.cpp:266:30: error: ‘pc_is_alive’ cannot be used as a function
+   printf("%s", pc_is_alive(&d) ? victory : tombstone);
+                              ^
+rlg327.cpp:273:20: error: ‘pc_delete’ was not declared in this scope
+   pc_delete(d.pc.pc);
+                    ^
+rlg327.cpp:275:20: error: ‘delete_dungeon’ was not declared in this scope
+   delete_dungeon(&d);
+                    ^
+Makefile:27: recipe for target 'rlg327.o' failed
+make: *** [rlg327.o] Error 1
