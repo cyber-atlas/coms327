@@ -1,7 +1,7 @@
-#include <unistd.h>
-#include <ncurses.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <ncurses.h>
 
 #include "io.h"
 #include "move.h"
@@ -13,12 +13,13 @@
 /* Same ugly hack we did in path.c */
 static dungeon_t *dungeon;
 
-typedef struct io_message {
+class io_message_t {
+  public:
   /* Will print " --more-- " at end of line when another message follows. *
    * Leave 10 extra spaces for that.                                      */
   char msg[71];
-  struct io_message *next;
-} io_message_t;
+  struct io_message_t *next;
+};
 
 static io_message_t *io_head, *io_tail;
 

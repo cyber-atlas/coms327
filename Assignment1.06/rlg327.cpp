@@ -265,6 +265,7 @@ int main(int argc, char *argv[])
 
   printf("%s", pc_is_alive(&d) ? victory : tombstone);
   //TODO take a look at this
+  //TODO need to make a second remembered terrain map, where the monsters live, only the PC's area gets updated. Everything else is blank
   printf("You defended your life in the face of %u deadly beasts.\n"
          "You avenged the cruel and untimely murders of %u "
          "peaceful dungeon residents.\n",

@@ -16,12 +16,13 @@
 
 #define DUMP_HARDNESS_IMAGES 0
 
-typedef struct corridor_path {
+class corridor_path_t {
+  public:
   heap_node_t *hn;
   uint8_t pos[2];
   uint8_t from[2];
   int32_t cost;
-} corridor_path_t;
+};
 
 /* Will need this later.
 static uint32_t in_room(dungeon_t *d, int16_t y, int16_t x)
@@ -342,6 +343,7 @@ int gaussian[5][5] = {
   {  1,  4,  7,  4,  1 }
 };
 
+//TODO how do I change this struct? 
 typedef struct queue_node {
   int x, y;
   struct queue_node *next;
