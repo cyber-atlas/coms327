@@ -66,7 +66,7 @@ class dungeon_t {
   character_t *character[DUNGEON_Y][DUNGEON_X];
   character_t pc;
   heap_t events;
-  uint16_t num_monsters;
+  uint16_t num_monsters; 
   uint16_t max_monsters;
   uint32_t character_sequence_number;
   /* Game time isn't strictly necessary.  It's implicit in the turn number *
@@ -77,6 +77,10 @@ class dungeon_t {
   uint32_t time;
   uint32_t is_new;
   uint32_t quit;
+
+  char knownToPC[DUNGEON_Y][DUNGEON_X];
+
+
 } ;
 
 void init_dungeon(dungeon_t *d);

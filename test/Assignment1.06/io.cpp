@@ -9,6 +9,7 @@
 #include "pc.h"
 #include "utils.h"
 #include "dungeon.h"
+#include "dims.h"
 
 /* Same ugly hack we did in path.c */
 static dungeon_t *dungeon;
@@ -198,6 +199,11 @@ static character_t *io_nearest_visible_monster(dungeon_t *d)
   return n;
 }
 
+//TODO update the array with the stuff that we currently see in the fog of war
+//TODO Only print the terrain in the known array
+
+//TODO fix going up and donw stairs
+
 void io_display(dungeon_t *d)
 {
   uint32_t y, x;
@@ -213,26 +219,34 @@ void io_display(dungeon_t *d)
 	  //TODO make the fog of war. Using the pc becasue that is what makes sense
 	  //If the player is in range, print the dungeon like normal
 	  if( (int32_t)x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
+		// d->knownToPC[y][x] = 
         switch (mapxy(x, y)) {
         case ter_wall:
         case ter_wall_immutable:
-          mvaddch(y + 1, x, ' ');
+          //mvaddch(y + 1, x, ' ');
+		  d->knownToPC[y][x] = ' ';
           break;
         case ter_floor:
         case ter_floor_room:
-          mvaddch(y + 1, x, '.');
+          //mvaddch(y + 1, x, '.');
+		  d->knownToPC[y][x] = '.';
+
           break;
         case ter_floor_hall:
-          mvaddch(y + 1, x, '#');
-          break;
+         // mvaddch(y + 1, x, '#');
+			d->knownToPC[y][x] = '#';
+			break;
         case ter_debug:
-          mvaddch(y + 1, x, '*');
+         // mvaddch(y + 1, x, '*');
+			d->knownToPC[y][x] = '*';
           break;
-        case ter_stairs_up:
-          mvaddch(y + 1, x, '<');
+		case ter_stairs_up:
+			// mvaddch(y + 1, x, '<');
+			d->knownToPC[y][x] = '<';
           break;
         case ter_stairs_down:
-          mvaddch(y + 1, x, '>');
+          //mvaddch(y + 1, x, '>');
+		  d->knownToPC[y] [x] = '>';
           break;
         default:
  /* Use zero as an error symbol, since it stands out somewhat, and it's *
@@ -240,21 +254,25 @@ void io_display(dungeon_t *d)
           mvaddch(y + 1, x, '0');
 		}//ends the switch statement
 		}//ends the if statement
+		
+		//Displays everything in the known to PC array
+		mvaddch(y+1, x, d->knownToPC[y][x]);
+
 		//If it is not in the player's range then put a space for all the other characters	
-		else{
+		/*else{
 			mvaddch ( y + 1, x, ' ');
-		}
+		}*/
       }
     }
   }
 
   //TODO copy paste what I did above and hopefully it works here to get rid of the monsters and fog of war is finished
-   if((int32_t) x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
+   //if((int32_t) x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
   mvprintw(23, 1, "PC position is (%2d,%2d).",
            d->pc.position[dim_x], d->pc.position[dim_y]);
   mvprintw(22, 1, "%d known %s.", d->num_monsters,
            d->num_monsters > 1 ? "monsters" : "monster");
-	}
+	//}
   if ((c = io_nearest_visible_monster(d))) {
     mvprintw(22, 30, "Nearest visible monster: %c at %d %c by %d %c.",
              c->symbol,
@@ -370,6 +388,7 @@ static void io_scroll_monster_list(char (*s)[40], uint32_t count)
 
   }
 }
+
 
 static void io_list_monsters_display(dungeon_t *d,
                                      character_t **c,

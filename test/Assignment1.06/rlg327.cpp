@@ -74,6 +74,16 @@ void usage(char *name)
   exit(-1);
 }
 
+//Defines the terrain known to the character array and initializes everything to rock (invisible)
+void initKnown(dungeon_t *d) {
+	for (int col = 0; col < DUNGEON_Y; col++) {
+		for (int row = 0; row < DUNGEON_X; row++) {
+			d->knownToPC[col][row] = 'K';
+		}
+	}
+	
+}
+
 int main(int argc, char *argv[])
 {
   dungeon_t d;
@@ -86,6 +96,7 @@ int main(int argc, char *argv[])
   char *save_file;
   char *load_file;
   char *pgm_file;
+
 
   memset(&d, 0, sizeof (d));
 
@@ -229,6 +240,9 @@ int main(int argc, char *argv[])
 
   config_pc(&d);
   gen_monsters(&d);
+
+  initKnown(&d);
+
 
   io_display(&d);
   io_queue_message("Seed is %u.", seed);
