@@ -213,12 +213,19 @@ void io_display(dungeon_t *d)
   clear();
   for (y = 0; y < 21; y++) {
     for (x = 0; x < 80; x++) {
-      if (d->character[y][x]) {
-        mvaddch(y + 1, x, d->character[y][x]->symbol);
+		//if ((int32_t)x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t)y < d->pc.position[dim_y] + 2 && (int32_t)y > d->pc.position[dim_y] - 2) {
+			if (d->character[y][x]) {
+				if ((int32_t)x < d->pc.position[dim_x] + 3 && (int32_t)x > d->pc.position[dim_x] - 3 && (int32_t)y < d->pc.position[dim_y] + 3 && (int32_t)y > d->pc.position[dim_y] - 3) {
+
+				mvaddch(y + 1, x, d->character[y][x]->symbol);
+				//d->knownToPC[y][x] = d->character[y][x]->symbol;
+				//Displays everything in the known to PC array
+				//mvaddch(y + 1, x, d->knownToPC[y][x]);
+			}
       } else {
 	  //TODO make the fog of war. Using the pc becasue that is what makes sense
 	  //If the player is in range, print the dungeon like normal
-	  if( (int32_t)x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
+	  if( (int32_t)x < d->pc.position[dim_x] + 3 && (int32_t)x > d->pc.position[dim_x] - 3 && (int32_t) y < d->pc.position[dim_y] + 3 && (int32_t) y > d->pc.position[dim_y] - 3 ){
 		// d->knownToPC[y][x] = 
         switch (mapxy(x, y)) {
         case ter_wall:
@@ -461,7 +468,7 @@ static void io_list_monsters(dungeon_t *d)
 
   /* Display it */
   io_list_monsters_display(d, c, count);
-  free(c);
+ free(c);
 
   /* And redraw the dungeon */
   io_display(d);

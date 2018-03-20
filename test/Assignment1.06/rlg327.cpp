@@ -78,7 +78,7 @@ void usage(char *name)
 void initKnown(dungeon_t *d) {
 	for (int col = 0; col < DUNGEON_Y; col++) {
 		for (int row = 0; row < DUNGEON_X; row++) {
-			d->knownToPC[col][row] = 'K';
+			d->knownToPC[col][row] = ' ';
 		}
 	}
 	
