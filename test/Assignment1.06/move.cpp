@@ -282,12 +282,25 @@ uint32_t move_pc(dungeon_t *d, uint32_t dir)
     if (mappair(d->pc.position) == ter_stairs_up) {
       was_stairs = 1;
       new_dungeon_level(d, '<');
+      //clear and reinitialize the knownto PC array
+      for (int col = 0; col < DUNGEON_Y; col++){
+	for (int row = 0; row < DUNGEON_X; row++){
+		d->knownToPC[col][row] = ' ';
+	}  
+      }
     }
     break;
   case '>':
     if (mappair(d->pc.position) == ter_stairs_down) {
       was_stairs = 1;
       new_dungeon_level(d, '>');
+
+      //clear and reinitialize the knownto PC array
+      for (int col = 0; col < DUNGEON_Y; col++){
+	for (int row = 0; row < DUNGEON_X; row++){
+		d->knownToPC[col][row] = ' ';
+	}  
+      }
     }
     break;
   }
