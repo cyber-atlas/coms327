@@ -199,11 +199,6 @@ static character_t *io_nearest_visible_monster(dungeon_t *d)
   return n;
 }
 
-//TODO update the array with the stuff that we currently see in the fog of war
-//TODO Only print the terrain in the known array
-
-//TODO fix going up and donw stairs
-
 void io_display(dungeon_t *d)
 {
   uint32_t y, x;
@@ -223,7 +218,6 @@ void io_display(dungeon_t *d)
 				//mvaddch(y + 1, x, d->knownToPC[y][x]);
 			}
       } else {
-	  //TODO make the fog of war. Using the pc becasue that is what makes sense
 	  //If the player is in range, print the dungeon like normal
 	  if( (int32_t)x < d->pc.position[dim_x] + 3 && (int32_t)x > d->pc.position[dim_x] - 3 && (int32_t) y < d->pc.position[dim_y] + 3 && (int32_t) y > d->pc.position[dim_y] - 3 ){
 		// d->knownToPC[y][x] = 
@@ -273,7 +267,6 @@ void io_display(dungeon_t *d)
     }
   }
 
-  //TODO copy paste what I did above and hopefully it works here to get rid of the monsters and fog of war is finished
    //if((int32_t) x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
   mvprintw(23, 1, "PC position is (%2d,%2d).",
            d->pc.position[dim_x], d->pc.position[dim_y]);
@@ -591,7 +584,56 @@ void io_handle_input(dungeon_t *d)
       io_queue_message("Have fun!  And happy printing!");
       fail_code = 0;
       break;
-    default:
+    
+    //This turns off the fog of war (essentially just print the dungeon and monsters once)
+    //This code is copied and pasted from the handle input function...literally the definition of 'wet' code
+    case 'f':
+      
+  uint32_t y, x;
+
+  //Looks for all of the spaces in the dungeon and see if there is a character for it. 
+  clear();
+  for (y = 0; y < 21; y++) {
+    for (x = 0; x < 80; x++) {
+			if (d->character[y][x]) {
+				mvaddch(y + 1, x, d->character[y][x]->symbol);
+      } else {
+	  //If the player is in range, print the dungeon like normal
+        switch (mapxy(x, y)) {
+        case ter_wall:
+        case ter_wall_immutable:
+          mvaddch(y + 1, x, ' ');
+          break;
+        case ter_floor:
+        case ter_floor_room:
+          mvaddch(y + 1, x, '.');
+          break;
+        case ter_floor_hall:
+          mvaddch(y + 1, x, '#');
+			break;
+        case ter_debug:
+          mvaddch(y + 1, x, '*');
+          break;
+		case ter_stairs_up:
+			 mvaddch(y + 1, x, '<');
+          break;
+        case ter_stairs_down:
+          mvaddch(y + 1, x, '>');
+          break;
+        default:
+ /* Use zero as an error symbol, since it stands out somewhat, and it's *
+  * not otherwise used.                                                 */
+          mvaddch(y + 1, x, '0');
+		}//ends the switch statement
+		}//ends the if statement
+		
+      }
+    }
+	break;
+
+	
+
+
       /* Also not in the spec.  It's not always easy to figure out what *
        * key code corresponds with a given keystroke.  Print out any    *
        * unhandled key here.  Not only does it give a visual error      *
