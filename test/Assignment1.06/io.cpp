@@ -471,6 +471,9 @@ void io_handle_input(dungeon_t *d)
 {
   uint32_t fail_code;
   int key;
+  int tr = 1; //checks if t was pressed before or not
+  //int tx = 0; //hold old x and y coordinates of pc
+ // int ty = 0;
 
   do {
     switch (key = getch()) {
@@ -585,6 +588,79 @@ void io_handle_input(dungeon_t *d)
       fail_code = 0;
       break;
     
+      //teleport case
+	case 't':
+		//If the pc was pressed before. 
+		if (tr % 2 == 0)
+		{
+			d->pc.symbol = '@';
+			//d->character[ty][tx] = '.';
+		 
+
+			tr++;
+		}
+
+		else
+		{
+			//tx = d->pc.position[dim_x];
+			//ty = d->pc.position[dim_y];
+			d->pc.symbol = '*';
+			//d->character[ty][tx] = '@';
+
+			//fail_code = move_pc(d, 6);
+			do {
+				switch (key = getch()) {
+				case '7':
+				case 'y':
+				case KEY_HOME:
+					fail_code = move_pc(d, 7);
+					break;
+				case '8':
+				case 'k':
+				case KEY_UP:
+					fail_code = move_pc(d, 8);
+					break;
+				case '9':
+				case 'u':
+				case KEY_PPAGE:
+					fail_code = move_pc(d, 9);
+					break;
+				case '6':
+				case 'l':
+				case KEY_RIGHT:
+					fail_code = move_pc(d, 6);
+					break;
+				case '3':
+				case 'n':
+				case KEY_NPAGE:
+					fail_code = move_pc(d, 3);
+					break;
+				case '2':
+				case 'j':
+				case KEY_DOWN:
+					fail_code = move_pc(d, 2);
+					break;
+				case '1':
+				case 'b':
+				case KEY_END:
+					fail_code = move_pc(d, 1);
+					break;
+				case '4':
+				case 'h':
+				case KEY_LEFT:
+					fail_code = move_pc(d, 4);
+					break;
+
+				}
+			} while (fail_code);
+
+			tr++;
+			
+		}
+		
+
+
+
     //This turns off the fog of war (essentially just print the dungeon and monsters once)
     //This code is copied and pasted from the handle input function...literally the definition of 'wet' code
     case 'f':
