@@ -1,0 +1,32 @@
+Date:   Tue Mar 20 21:17:14 2018 -0500
+
+    Teleport should be working except for monsters
+
+Date:   Tue Mar 20 16:19:18 2018 -0500
+
+    Modified io so that it handles the f key and shuts off the fog of war until the next turn is made
+
+Date:   Tue Mar 20 15:33:07 2018 -0500
+
+    Fixed the upstairs/downstairs fog of war errors.
+
+Date:   Tue Mar 20 13:22:07 2018 -0500
+
+    Fog of war now works properly when being displayed. The monster print function was turned off and they only print now if they are within the fog.
+
+Date:   Mon Mar 19 18:01:20 2018 -0500
+
+    Fog of war works better now, the stuff the player sees is now remembered. Still can't figure out how to deal with the monsters
+
+Date:   Mon Mar 19 13:39:28 2018 -0500
+
+    Added todos, fixed the issues that I had with the way I was initially changing the structs to classes, and fixed all of the errors that I was getting. Code now runs again!
+
+Date:   Mon Mar 19 13:39:10 2018 -0500
+
+    Added todos, fixed the issues that I had with the way I was initially changing the structs to classes, and fixed all of the errors that I was getting. Code now runs again!
+
+Date:   Mon Mar 19 13:33:32 2018 -0500
+
+    Added todos, fixed the issues that I had with the way I was initially changing the structs to classes, and fixed all of the errors that I was getting. Code now runs again!
+

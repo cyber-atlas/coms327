@@ -74,29 +74,18 @@ void usage(char *name)
   exit(-1);
 }
 
-//Defines the terrain known to the character array and initializes everything to rock (invisible)
-void initKnown(dungeon_t *d) {
-	for (int col = 0; col < DUNGEON_Y; col++) {
-		for (int row = 0; row < DUNGEON_X; row++) {
-			d->knownToPC[col][row] = ' ';
-		}
-	}
-	
-}
-
 int main(int argc, char *argv[])
 {
   dungeon_t d;
   time_t seed;
   struct timeval tv;
-  int32_t i;//Changed this from unsigned it to int to get rid of an error
+  int32_t i;
   uint32_t do_load, do_save, do_seed, do_image, do_save_seed,
            do_save_image, do_place_pc;
   uint32_t long_arg;
   char *save_file;
   char *load_file;
   char *pgm_file;
-
 
   memset(&d, 0, sizeof (d));
 
@@ -200,10 +189,10 @@ int main(int argc, char *argv[])
               (long_arg && strcmp(argv[i], "-pc"))) {
             usage(argv[0]);
           }
-          if ((d.pc.position[dim_y] = atoi(argv[++i])) < 1 ||
-              d.pc.position[dim_y] > DUNGEON_Y - 2         ||
-              (d.pc.position[dim_x] = atoi(argv[++i])) < 1 ||
-              d.pc.position[dim_x] > DUNGEON_X - 2)         {
+          if ((d.PC->position[dim_y] = atoi(argv[++i])) < 1 ||
+              d.PC->position[dim_y] > DUNGEON_Y - 2         ||
+              (d.PC->position[dim_x] = atoi(argv[++i])) < 1 ||
+              d.PC->position[dim_x] > DUNGEON_X - 2)         {
             fprintf(stderr, "Invalid PC position.\n");
             usage(argv[0]);
           }
@@ -241,9 +230,6 @@ int main(int argc, char *argv[])
   config_pc(&d);
   gen_monsters(&d);
 
-  initKnown(&d);
-
-
   io_display(&d);
   io_queue_message("Seed is %u.", seed);
   while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
@@ -278,14 +264,17 @@ int main(int argc, char *argv[])
   }
 
   printf("%s", pc_is_alive(&d) ? victory : tombstone);
-  //TODO take a look at this
-  //TODO need to make a second remembered terrain map, where the monsters live, only the PC's area gets updated. Everything else is blank
   printf("You defended your life in the face of %u deadly beasts.\n"
          "You avenged the cruel and untimely murders of %u "
          "peaceful dungeon residents.\n",
-         d.pc.kills[kill_direct], d.pc.kills[kill_avenged]);
+         d.PC->kills[kill_direct], d.PC->kills[kill_avenged]);
 
-  pc_delete(d.pc.pc);
+  if (pc_is_alive(&d)) {
+    /* If the PC is dead, it's in the move heap and will get automatically *
+     * deleted when the heap destructs.  In that case, we can't call       *
+     * delete_pc(), because it will lead to a double delete.               */
+    character_delete(d.PC);
+  }
 
   delete_dungeon(&d);
 

@@ -1,0 +1,5 @@
+The project now runs as C++ code and is compiled using the C++ compiler. 
+Everything is rendered on the screen using ncurses. 
+Fog of war is implemented. To turn it off press f, then once you move the player, the fog of war turns back on.
+When the player waants to teleport. Player presses t, moves the player and a cursor appears. Moves the player to any point in the dungeon. However, it does not move the player to a monster or to a rock position.
+

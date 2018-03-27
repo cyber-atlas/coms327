@@ -1,7 +1,7 @@
-#include <ctype.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <ncurses.h>
+#include <ctype.h>
+#include <stdlib.h>
 
 #include "io.h"
 #include "move.h"
@@ -9,18 +9,16 @@
 #include "pc.h"
 #include "utils.h"
 #include "dungeon.h"
-#include "dims.h"
 
 /* Same ugly hack we did in path.c */
 static dungeon_t *dungeon;
 
-class io_message_t {
-  public:
+typedef struct io_message {
   /* Will print " --more-- " at end of line when another message follows. *
    * Leave 10 extra spaces for that.                                      */
   char msg[71];
-  struct io_message_t *next;
-};
+  struct io_message *next;
+} io_message_t;
 
 static io_message_t *io_head, *io_tail;
 
@@ -58,7 +56,7 @@ void io_queue_message(const char *format, ...)
   io_message_t *tmp;
   va_list ap;
 
-  if (!(tmp = (io_message_t*) malloc(sizeof (*tmp)))) {
+  if (!(tmp = (io_message_t *) malloc(sizeof (*tmp)))) {
     perror("malloc");
     exit(1);
   }
@@ -105,7 +103,7 @@ void io_display_tunnel(dungeon_t *d)
   clear();
   for (y = 0; y < DUNGEON_Y; y++) {
     for (x = 0; x < DUNGEON_X; x++) {
-      if (charxy(x, y) == &d->pc) {
+      if (charxy(x, y) == d->PC) {
         mvaddch(y + 1, x, charxy(x, y)->symbol);
       } else if (hardnessxy(x, y) == 255) {
         mvaddch(y + 1, x, '*');
@@ -160,25 +158,25 @@ void io_display_hardness(dungeon_t *d)
 
 static int compare_monster_distance(const void *v1, const void *v2)
 {
-  const character_t *const *c1 = (const character_t *const *) v1;
-  const character_t *const *c2 = (const character_t *const *) v2;
+  const character *const *c1 = (const character *const *) v1;
+  const character *const *c2 = (const character *const *) v2;
 
   return (dungeon->pc_distance[(*c1)->position[dim_y]][(*c1)->position[dim_x]] -
           dungeon->pc_distance[(*c2)->position[dim_y]][(*c2)->position[dim_x]]);
 }
 
-static character_t *io_nearest_visible_monster(dungeon_t *d)
+static character *io_nearest_visible_monster(dungeon_t *d)
 {
-  character_t **c, *n;
+  character **c, *n;
   uint32_t x, y, count, i;
 
-  c = (character_t**) malloc(d->num_monsters * sizeof (*c));
+  c = (character **) malloc(d->num_monsters * sizeof (*c));
 
   /* Get a linear list of monsters */
   for (count = 0, y = 1; y < DUNGEON_Y - 1; y++) {
     for (x = 1; x < DUNGEON_X - 1; x++) {
-      if (d->character[y][x] && d->character[y][x] != &d->pc) {
-        c[count++] = d->character[y][x];
+      if (d->character_map[y][x] && d->character_map[y][x] != d->PC) {
+        c[count++] = d->character_map[y][x];
       }
     }
   }
@@ -188,7 +186,7 @@ static character_t *io_nearest_visible_monster(dungeon_t *d)
   qsort(c, count, sizeof (*c), compare_monster_distance);
 
   for (n = NULL, i = 0; i < count; i++) {
-    if (can_see(d, &d->pc, c[i])) {
+    if (can_see(d, character_get_pos(d->PC), character_get_pos(c[i]), 1, 0)) {
       n = c[i];
       break;
     }
@@ -202,90 +200,138 @@ static character_t *io_nearest_visible_monster(dungeon_t *d)
 void io_display(dungeon_t *d)
 {
   uint32_t y, x;
-  character_t *c;
+  uint32_t illuminated;
+  character *c;
+  int32_t visible_monsters;
 
-  //Looks for all of the spaces in the dungeon and see if there is a character for it. 
   clear();
-  for (y = 0; y < 21; y++) {
+  for (visible_monsters = -1, y = 0; y < 21; y++) {
     for (x = 0; x < 80; x++) {
-		//if ((int32_t)x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t)y < d->pc.position[dim_y] + 2 && (int32_t)y > d->pc.position[dim_y] - 2) {
-			if (d->character[y][x]) {
-				if ((int32_t)x < d->pc.position[dim_x] + 3 && (int32_t)x > d->pc.position[dim_x] - 3 && (int32_t)y < d->pc.position[dim_y] + 3 && (int32_t)y > d->pc.position[dim_y] - 3) {
-
-				mvaddch(y + 1, x, d->character[y][x]->symbol);
-				//d->knownToPC[y][x] = d->character[y][x]->symbol;
-				//Displays everything in the known to PC array
-				//mvaddch(y + 1, x, d->knownToPC[y][x]);
-			}
+      if ((illuminated = is_illuminated(d->PC, y, x))) {
+        attron(A_BOLD);
+      }
+      if (d->character_map[y][x] &&
+          can_see(d,
+                  character_get_pos(d->PC),
+                  character_get_pos(d->character_map[y][x]),
+                  1, 0)) {
+        mvaddch(y + 1, x,
+                character_get_symbol(d->character_map[y][x]));
+        visible_monsters++;
       } else {
-	  //If the player is in range, print the dungeon like normal
-	  if( (int32_t)x < d->pc.position[dim_x] + 3 && (int32_t)x > d->pc.position[dim_x] - 3 && (int32_t) y < d->pc.position[dim_y] + 3 && (int32_t) y > d->pc.position[dim_y] - 3 ){
-		// d->knownToPC[y][x] = 
-        switch (mapxy(x, y)) {
+        switch (pc_learned_terrain(d->PC, y, x)) {
         case ter_wall:
         case ter_wall_immutable:
-          //mvaddch(y + 1, x, ' ');
-		  d->knownToPC[y][x] = ' ';
+        case ter_unknown:
+          mvaddch(y + 1, x, ' ');
           break;
         case ter_floor:
         case ter_floor_room:
-          //mvaddch(y + 1, x, '.');
-		  d->knownToPC[y][x] = '.';
-
+          mvaddch(y + 1, x, '.');
           break;
         case ter_floor_hall:
-         // mvaddch(y + 1, x, '#');
-			d->knownToPC[y][x] = '#';
-			break;
-        case ter_debug:
-         // mvaddch(y + 1, x, '*');
-			d->knownToPC[y][x] = '*';
+          mvaddch(y + 1, x, '#');
           break;
-		case ter_stairs_up:
-			// mvaddch(y + 1, x, '<');
-			d->knownToPC[y][x] = '<';
+        case ter_debug:
+          mvaddch(y + 1, x, '*');
+          break;
+        case ter_stairs_up:
+          mvaddch(y + 1, x, '<');
           break;
         case ter_stairs_down:
-          //mvaddch(y + 1, x, '>');
-		  d->knownToPC[y] [x] = '>';
+          mvaddch(y + 1, x, '>');
           break;
         default:
  /* Use zero as an error symbol, since it stands out somewhat, and it's *
   * not otherwise used.                                                 */
           mvaddch(y + 1, x, '0');
-		}//ends the switch statement
-		}//ends the if statement
-		
-		//Displays everything in the known to PC array
-		mvaddch(y+1, x, d->knownToPC[y][x]);
-
-		//If it is not in the player's range then put a space for all the other characters	
-		/*else{
-			mvaddch ( y + 1, x, ' ');
-		}*/
+        }
+      }
+      if (illuminated) {
+        attroff(A_BOLD);
       }
     }
   }
 
-   //if((int32_t) x < d->pc.position[dim_x] + 2 && (int32_t)x > d->pc.position[dim_x] - 2 && (int32_t) y < d->pc.position[dim_y] + 2 && (int32_t) y > d->pc.position[dim_y] - 2 ){
   mvprintw(23, 1, "PC position is (%2d,%2d).",
-           d->pc.position[dim_x], d->pc.position[dim_y]);
-  mvprintw(22, 1, "%d known %s.", d->num_monsters,
-           d->num_monsters > 1 ? "monsters" : "monster");
-	//}
+           d->PC->position[dim_x], d->PC->position[dim_y]);
+  mvprintw(22, 1, "%d known %s.", visible_monsters,
+           visible_monsters > 1 ? "monsters" : "monster");
   if ((c = io_nearest_visible_monster(d))) {
     mvprintw(22, 30, "Nearest visible monster: %c at %d %c by %d %c.",
              c->symbol,
-             abs(c->position[dim_y] - d->pc.position[dim_y]),
-             ((c->position[dim_y] - d->pc.position[dim_y]) <= 0 ?
+             abs(c->position[dim_y] - d->PC->position[dim_y]),
+             ((c->position[dim_y] - d->PC->position[dim_y]) <= 0 ?
               'N' : 'S'),
-             abs(c->position[dim_x] - d->pc.position[dim_x]),
-             ((c->position[dim_x] - d->pc.position[dim_x]) <= 0 ?
+             abs(c->position[dim_x] - d->PC->position[dim_x]),
+             ((c->position[dim_x] - d->PC->position[dim_x]) <= 0 ?
               'E' : 'W'));
   } else {
     mvprintw(22, 30, "Nearest visible monster: NONE.");
   }
-           
+
+  io_print_message_queue(0, 0);
+
+  refresh();
+}
+
+void io_display_no_fog(dungeon_t *d)
+{
+  uint32_t y, x;
+  character *c;
+
+  clear();
+  for (y = 0; y < 21; y++) {
+    for (x = 0; x < 80; x++) {
+      if (d->character_map[y][x]) {
+        mvaddch(y + 1, x, d->character_map[y][x]->symbol);
+      } else {
+        switch (mapxy(x, y)) {
+        case ter_wall:
+        case ter_wall_immutable:
+          mvaddch(y + 1, x, ' ');
+          break;
+        case ter_floor:
+        case ter_floor_room:
+          mvaddch(y + 1, x, '.');
+          break;
+        case ter_floor_hall:
+          mvaddch(y + 1, x, '#');
+          break;
+        case ter_debug:
+          mvaddch(y + 1, x, '*');
+          break;
+        case ter_stairs_up:
+          mvaddch(y + 1, x, '<');
+          break;
+        case ter_stairs_down:
+          mvaddch(y + 1, x, '>');
+          break;
+        default:
+ /* Use zero as an error symbol, since it stands out somewhat, and it's *
+  * not otherwise used.                                                 */
+          mvaddch(y + 1, x, '0');
+        }
+      }
+    }
+  }
+
+  mvprintw(23, 1, "PC position is (%2d,%2d).",
+           d->PC->position[dim_x], d->PC->position[dim_y]);
+  mvprintw(22, 1, "%d known %s.", d->num_monsters,
+           d->num_monsters > 1 ? "monsters" : "monster");
+  if ((c = io_nearest_visible_monster(d))) {
+    mvprintw(22, 30, "Nearest visible monster: %c at %d %c by %d %c.",
+             c->symbol,
+             abs(c->position[dim_y] - d->PC->position[dim_y]),
+             ((c->position[dim_y] - d->PC->position[dim_y]) <= 0 ?
+              'N' : 'S'),
+             abs(c->position[dim_x] - d->PC->position[dim_x]),
+             ((c->position[dim_x] - d->PC->position[dim_x]) <= 0 ?
+              'E' : 'W'));
+  } else {
+    mvprintw(22, 30, "Nearest visible monster: NONE.");
+  }
 
   io_print_message_queue(0, 0);
 
@@ -303,29 +349,155 @@ void io_display_monster_list(dungeon_t *d)
 
 uint32_t io_teleport_pc(dungeon_t *d)
 {
-  /* Just for fun. */
   pair_t dest;
+  int c;
+  int actual;
 
-  do {
-    dest[dim_x] = rand_range(1, DUNGEON_X - 2);
-    dest[dim_y] = rand_range(1, DUNGEON_Y - 2);
-  } while (charpair(dest));
+  io_display_no_fog(d);
 
-  d->character[d->pc.position[dim_y]][d->pc.position[dim_x]] = NULL;
-  d->character[dest[dim_y]][dest[dim_x]] = &d->pc;
+  mvprintw(0, 0,
+           "Choose a location.  't' or '.' to teleport to; 'r' for random.");
 
-  d->pc.position[dim_y] = dest[dim_y];
-  d->pc.position[dim_x] = dest[dim_x];
+  dest[dim_y] = d->PC->position[dim_y];
+  dest[dim_x] = d->PC->position[dim_x];
 
-  if (mappair(dest) < ter_floor) {
-    mappair(dest) = ter_floor;
+  mvaddch(dest[dim_y] + 1, dest[dim_x], '*');
+  refresh();
+
+  while ((c = getch()) != 't' && c != '.' && c != 'r') {
+    if (charpair(dest)) {
+      actual = character_get_symbol(charpair(dest));
+    } else {
+      switch (mappair(dest)) {
+      case ter_wall:
+      case ter_wall_immutable:
+        actual = ' ';
+        break;
+      case ter_floor:
+      case ter_floor_room:
+        actual = '.';
+        break;
+      case ter_floor_hall:
+        actual = '#';
+        break;
+      case ter_debug:
+        actual = '*';
+        break;
+      case ter_stairs_up:
+        actual = '<';
+        break;
+      case ter_stairs_down:
+        actual = '>';
+        break;
+      default:
+        break;
+      }      
+    }
+
+    mvaddch(dest[dim_y] + 1, dest[dim_x], actual);
+
+    switch (c) {
+    case '7':
+    case 'y':
+    case KEY_HOME:
+      if (dest[dim_y] != 1) {
+        dest[dim_y]--;
+      }
+      if (dest[dim_x] != 1) {
+        dest[dim_x]--;
+      }
+      break;
+    case '8':
+    case 'k':
+    case KEY_UP:
+      if (dest[dim_y] != 1) {
+        dest[dim_y]--;
+      }
+      break;
+    case '9':
+    case 'u':
+    case KEY_PPAGE:
+      if (dest[dim_y] != 1) {
+        dest[dim_y]--;
+      }
+      if (dest[dim_x] != DUNGEON_X - 1) {
+        dest[dim_x]++;
+      }
+      break;
+    case '6':
+    case 'l':
+    case KEY_RIGHT:
+      if (dest[dim_x] != DUNGEON_X - 1) {
+        dest[dim_x]++;
+      }
+      break;
+    case '3':
+    case 'n':
+    case KEY_NPAGE:
+      if (dest[dim_y] != DUNGEON_Y - 1) {
+        dest[dim_y]++;
+      }
+      if (dest[dim_x] != DUNGEON_X - 1) {
+        dest[dim_x]++;
+      }
+      break;
+    case '2':
+    case 'j':
+    case KEY_DOWN:
+      if (dest[dim_y] != DUNGEON_Y - 1) {
+        dest[dim_y]++;
+      }
+      break;
+    case '1':
+    case 'b':
+    case KEY_END:
+      if (dest[dim_y] != DUNGEON_Y - 1) {
+        dest[dim_y]++;
+      }
+      if (dest[dim_x] != 1) {
+        dest[dim_x]--;
+      }
+      break;
+    case '4':
+    case 'h':
+    case KEY_LEFT:
+      if (dest[dim_x] != DUNGEON_X - 1) {
+        dest[dim_x]--;
+      }
+      break;
+    }
+
+    mvaddch(dest[dim_y] + 1, dest[dim_x], '*');
+    refresh();
   }
 
+  if (c == 'r') {
+    do {
+      dest[dim_x] = rand_range(1, DUNGEON_X - 2);
+      dest[dim_y] = rand_range(1, DUNGEON_Y - 2);
+    } while (charpair(dest) || mappair(dest) < ter_floor);
+  }
+
+  if (charpair(dest) && charpair(dest) != d->PC) {
+    io_queue_message("Teleport failed.  Destination occupied.");
+  } else {  
+    d->character_map[d->PC->position[dim_y]][d->PC->position[dim_x]] = NULL;
+    d->character_map[dest[dim_y]][dest[dim_x]] = d->PC;
+
+    d->PC->position[dim_y] = dest[dim_y];
+    d->PC->position[dim_x] = dest[dim_x];
+  }
+
+  pc_observe_terrain(d->PC, d);
   dijkstra(d);
   dijkstra_tunnel(d);
 
+  io_display(d);
+
   return 0;
 }
+
+
 /* Adjectives to describe our monsters */
 static const char *adjectives[] = {
   "A menacing ",
@@ -389,9 +561,8 @@ static void io_scroll_monster_list(char (*s)[40], uint32_t count)
   }
 }
 
-
 static void io_list_monsters_display(dungeon_t *d,
-                                     character_t **c,
+                                     character **c,
                                      uint32_t count)
 {
   uint32_t i;
@@ -411,11 +582,11 @@ static void io_list_monsters_display(dungeon_t *d,
               adjectives[rand() % (sizeof (adjectives) /
                                    sizeof (adjectives[0]))]),
              c[i]->symbol,
-             abs(c[i]->position[dim_y] - d->pc.position[dim_y]),
-             ((c[i]->position[dim_y] - d->pc.position[dim_y]) <= 0 ?
+             abs(c[i]->position[dim_y] - d->PC->position[dim_y]),
+             ((c[i]->position[dim_y] - d->PC->position[dim_y]) <= 0 ?
               "North" : "South"),
-             abs(c[i]->position[dim_x] - d->pc.position[dim_x]),
-             ((c[i]->position[dim_x] - d->pc.position[dim_x]) <= 0 ?
+             abs(c[i]->position[dim_x] - d->PC->position[dim_x]),
+             ((c[i]->position[dim_x] - d->PC->position[dim_x]) <= 0 ?
               "East" : "West"));
     if (count <= 13) {
       /* Handle the non-scrolling case right here. *
@@ -441,16 +612,18 @@ static void io_list_monsters_display(dungeon_t *d,
 
 static void io_list_monsters(dungeon_t *d)
 {
-  character_t **c;
+  character **c;
   uint32_t x, y, count;
 
-  c = (character_t**) malloc(d->num_monsters * sizeof (*c));
+  c = (character **) malloc(d->num_monsters * sizeof (*c));
 
   /* Get a linear list of monsters */
   for (count = 0, y = 1; y < DUNGEON_Y - 1; y++) {
     for (x = 1; x < DUNGEON_X - 1; x++) {
-      if (d->character[y][x] && d->character[y][x] != &d->pc) {
-        c[count++] = d->character[y][x];
+      if (d->character_map[y][x] && d->character_map[y][x] != d->PC &&
+          can_see(d, character_get_pos(d->PC),
+                  character_get_pos(d->character_map[y][x]), 1, 0)) {
+        c[count++] = d->character_map[y][x];
       }
     }
   }
@@ -461,7 +634,7 @@ static void io_list_monsters(dungeon_t *d)
 
   /* Display it */
   io_list_monsters_display(d, c, count);
- free(c);
+  free(c);
 
   /* And redraw the dungeon */
   io_display(d);
@@ -471,9 +644,6 @@ void io_handle_input(dungeon_t *d)
 {
   uint32_t fail_code;
   int key;
-  //int tr = 1; //checks if t was pressed before or not
-  //int tx = 0; //hold old x and y coordinates of pc
- // int ty = 0;
 
   do {
     switch (key = getch()) {
@@ -557,13 +727,17 @@ void io_handle_input(dungeon_t *d)
     case 'L':
       fail_code = 1;
       break;
-    case 'g':
+    case 't':
       /* Teleport the PC to a random place in the dungeon.              */
       io_teleport_pc(d);
-      fail_code = 0;
+      fail_code = 1;
       break;
     case 'm':
       io_list_monsters(d);
+      fail_code = 1;
+      break;
+    case 'f':
+      io_display_no_fog(d);
       fail_code = 1;
       break;
     case 'q':
@@ -587,125 +761,7 @@ void io_handle_input(dungeon_t *d)
       io_queue_message("Have fun!  And happy printing!");
       fail_code = 0;
       break;
-    
-      //teleport case
-	case 't':
-		
-
-		
-			//tx = d->pc.position[dim_x];
-			//ty = d->pc.position[dim_y];
-			d->pc.symbol = '*';
-			//d->character[ty][tx] = '@';
-
-			//fail_code = move_pc(d, 6);
-			do {
-				switch (key = getch()) {
-				case '7':
-				case 'y':
-				case KEY_HOME:
-					fail_code = move_pc(d, 7);
-					break;
-				case '8':
-				case 'k':
-				case KEY_UP:
-					fail_code = move_pc(d, 8);
-					break;
-				case '9':
-				case 'u':
-				case KEY_PPAGE:
-					fail_code = move_pc(d, 9);
-					break;
-				case '6':
-				case 'l':
-				case KEY_RIGHT:
-					fail_code = move_pc(d, 6);
-					break;
-				case '3':
-				case 'n':
-				case KEY_NPAGE:
-					fail_code = move_pc(d, 3);
-					break;
-				case '2':
-				case 'j':
-				case KEY_DOWN:
-					fail_code = move_pc(d, 2);
-					break;
-				case '1':
-				case 'b':
-				case KEY_END:
-					fail_code = move_pc(d, 1);
-					break;
-				case '4':
-				case 'h':
-				case KEY_LEFT:
-					fail_code = move_pc(d, 4);
-					break;
-
-				case't': 
-					d->pc.symbol = '@';
-					break;
-
-
-				}
-			} while (fail_code);
-
-			//tr++;
-			
-			break;
-		
-
-
-
-    //This turns off the fog of war (essentially just print the dungeon and monsters once)
-    //This code is copied and pasted from the handle input function...literally the definition of 'wet' code
-    case 'f':
-      
-  uint32_t y, x;
-
-  //Looks for all of the spaces in the dungeon and see if there is a character for it. 
-  clear();
-  for (y = 0; y < 21; y++) {
-    for (x = 0; x < 80; x++) {
-			if (d->character[y][x]) {
-				mvaddch(y + 1, x, d->character[y][x]->symbol);
-      } else {
-	  //If the player is in range, print the dungeon like normal
-        switch (mapxy(x, y)) {
-        case ter_wall:
-        case ter_wall_immutable:
-          mvaddch(y + 1, x, ' ');
-          break;
-        case ter_floor:
-        case ter_floor_room:
-          mvaddch(y + 1, x, '.');
-          break;
-        case ter_floor_hall:
-          mvaddch(y + 1, x, '#');
-			break;
-        case ter_debug:
-          mvaddch(y + 1, x, '*');
-          break;
-		case ter_stairs_up:
-			 mvaddch(y + 1, x, '<');
-          break;
-        case ter_stairs_down:
-          mvaddch(y + 1, x, '>');
-          break;
-        default:
- /* Use zero as an error symbol, since it stands out somewhat, and it's *
-  * not otherwise used.                                                 */
-          mvaddch(y + 1, x, '0');
-		}//ends the switch statement
-		}//ends the if statement
-		
-      }
-    }
-	break;
-
-	
-
-
+    default:
       /* Also not in the spec.  It's not always easy to figure out what *
        * key code corresponds with a given keystroke.  Print out any    *
        * unhandled key here.  Not only does it give a visual error      *
