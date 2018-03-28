@@ -1,0 +1,10 @@
+For this project, I was able to successfully parse the information. I didn't know whether
+I was supposed to actually "roll" the dice, so I did write code for that in main, but
+commented it out.
+
+I parsed everything in main. So, since I'm using the professor's code, you'll have to
+quit out of the game and the parsed values will appear above the crown/grave display.
+I didn't know how to remove that from main without throwing all kinds of errors.
+
+All the values that are parsed and printed are exactly as the txt document has them.
+Only the values are printed though. Not the tags like "NAME", "SYMBOL", etc...

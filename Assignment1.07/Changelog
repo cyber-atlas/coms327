@@ -1,0 +1,6 @@
+3/26: I procrastinated a little too much on this. I wrote am reading in the
+values. I thing
+3/27 Added the exit so it does not go into the dungoen code. I still need to
+figure out why ifstream is not working
+3/28: Fixed the reading in issue. The file prints properly, and is parsed
+properly. 

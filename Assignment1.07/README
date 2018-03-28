@@ -1,0 +1,4 @@
+This week the game does not run the actual game code. I put an exit before the dungeon is initialized. 
+We are supposed to read in a file this week and parse the text within.
+The file we are parsing is stored at ~/.rlg327/monster_desc.txt
+The values that are read in are stored as their proper types and are printed to the screen.

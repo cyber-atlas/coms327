@@ -2,14 +2,19 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-
-/* Very slow seed: 686846853 */
-
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <iostream>
+#include <string>
 #include "dungeon.h"
 #include "pc.h"
 #include "npc.h"
 #include "move.h"
 #include "io.h"
+
+using namespace std;
+
 
 const char *victory =
   "\n                                       o\n"
@@ -74,6 +79,19 @@ void usage(char *name)
   exit(-1);
 }
 
+class MonsterType {
+public:
+  string name;
+  string description;
+  string color;
+  string speed;
+  string abilities;
+  string hitpoints;
+  string atkdmg;
+};
+
+
+
 int main(int argc, char *argv[])
 {
   dungeon_t d;
@@ -81,11 +99,109 @@ int main(int argc, char *argv[])
   struct timeval tv;
   int32_t i;
   uint32_t do_load, do_save, do_seed, do_image, do_save_seed,
-           do_save_image, do_place_pc;
+    do_save_image, do_place_pc;
   uint32_t long_arg;
   char *save_file;
   char *load_file;
   char *pgm_file;
+
+  char *dir = getenv("HOME");
+  char *path = strcat(dir, "/.rlg327");
+  std::ifstream myFile;
+
+  myFile.open(strcat(path, "/monster_desc.txt"));
+  vector<MonsterType> monstList;
+  
+  string myLine = "";
+  int counter = 0;
+	
+cout << "test";
+
+  while (getline(myFile, myLine)) {
+    
+    
+
+       
+    MonsterType monMon;
+	
+	
+    
+    string value;
+ 
+
+    value = myLine.substr(0, myLine.find(" "));
+    cout << value + " ";//testprint
+    
+    if (value == "NAME") {
+     
+      counter++;
+      
+      monMon.name = myLine.substr(myLine.find(" ") + 1);
+      
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    if (value == "COLOR") {
+
+      counter++;
+      
+      monMon.color = myLine.substr(myLine.find(" ") + 1);
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    if (value == "SYMB") {
+      counter++;
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    if (value == "SPEED") {
+      counter++;
+    
+      monMon.speed = myLine.substr(myLine.find(" ") + 1);
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+	  
+    }
+    if (value == "ABIL") {
+      counter++;
+      monMon.abilities = myLine.substr(myLine.find(" ") + 1);
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    if (value == "HP") {
+      counter++;
+      
+      monMon.hitpoints = myLine.substr(myLine.find(" ") + 1);
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    if (value == "DAM") {
+      counter++;
+      monMon.atkdmg = myLine.substr(myLine.find(" ") + 1);
+      cout << myLine.substr(myLine.find(" ") + 1) << endl;
+    }
+    
+    string desc;
+
+    if (value == "DESC") {
+      counter++;
+      while (myLine != ".") {
+
+	getline(myFile, myLine);
+
+	if (myLine != ".") {
+	  desc = desc + myLine;
+	  cout << myLine << endl;
+	}
+
+      }
+      
+      monMon.description = desc;
+    }
+    if (counter % 8 == 0) {
+      cout << "\n" << endl;
+    }
+    monstList.push_back(monMon);
+      
+     
+  }
+ 
+  //TODO 
+	exit(0);
 
   memset(&d, 0, sizeof (d));
 
@@ -96,7 +212,7 @@ int main(int argc, char *argv[])
   do_seed = 1;
   save_file = load_file = NULL;
   d.max_monsters = MAX_MONSTERS;
-
+  
   /* The project spec requires '--load' and '--save'.  It's common  *
    * to have short and long forms of most switches (assuming you    *
    * don't run out of letters).  For now, we've got plenty.  Long   *
@@ -127,14 +243,6 @@ int main(int argc, char *argv[])
             usage(argv[0]);
           }
           do_seed = 0;
-          break;
-        case 'n':
-          if ((!long_arg && argv[i][2]) ||
-              (long_arg && strcmp(argv[i], "-nummon")) ||
-              argc < ++i + 1 /* No more arguments */ ||
-              !sscanf(argv[i], "%hu", &d.max_monsters)) {
-            usage(argv[0]);
-          }
           break;
         case 'l':
           if ((!long_arg && argv[i][2]) ||
@@ -180,6 +288,14 @@ int main(int argc, char *argv[])
             /* There is another argument, and it's not a switch, so *
              * we'll treat it as a save file and try to load it.    */
             pgm_file = argv[++i];
+          }
+          break;
+        case 'n':
+          if ((!long_arg && argv[i][2]) ||
+              (long_arg && strcmp(argv[i], "-nummon")) ||
+              argc < ++i + 1 /* No more arguments */ ||
+              !sscanf(argv[i], "%hu", &d.max_monsters)) {
+            usage(argv[0]);
           }
           break;
         case 'p':
@@ -234,11 +350,14 @@ int main(int argc, char *argv[])
   io_queue_message("Seed is %u.", seed);
   while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
     do_moves(&d);
+    //delete_dungeon(&d);
   }
   io_display(&d);
 
   io_reset_terminal();
-
+ //TODO cehck
+//  delete_dungeon(&d);
+  
   if (do_save) {
     if (do_save_seed) {
        /* 10 bytes for number, please dot, extention and null terminator. */
@@ -247,13 +366,13 @@ int main(int argc, char *argv[])
     }
     if (do_save_image) {
       if (!pgm_file) {
-	fprintf(stderr, "No image file was loaded.  Using default.\n");
-	do_save_image = 0;
+  	fprintf(stderr, "No image file was loaded.  Using default.\n");
+  	do_save_image = 0;
       } else {
-	/* Extension of 3 characters longer than image extension + null. */
-	save_file = (char *) malloc(strlen(pgm_file) + 4);
-	strcpy(save_file, pgm_file);
-	strcpy(strchr(save_file, '.') + 1, "rlg327");
+  	/* Extension of 3 characters longer than image extension + null. */
+  	save_file = (char *) malloc(strlen(pgm_file) + 4);
+  	strcpy(save_file, pgm_file);
+  	strcpy(strchr(save_file, '.') + 1, "rlg327");
       }
     }
     write_dungeon(&d, save_file);
@@ -263,6 +382,7 @@ int main(int argc, char *argv[])
     }
   }
 
+ 
   printf("%s", pc_is_alive(&d) ? victory : tombstone);
   printf("You defended your life in the face of %u deadly beasts.\n"
          "You avenged the cruel and untimely murders of %u "
@@ -270,11 +390,12 @@ int main(int argc, char *argv[])
          d.PC->kills[kill_direct], d.PC->kills[kill_avenged]);
 
   if (pc_is_alive(&d)) {
-    /* If the PC is dead, it's in the move heap and will get automatically *
-     * deleted when the heap destructs.  In that case, we can't call       *
-     * delete_pc(), because it will lead to a double delete.               */
-    character_delete(d.PC);
-  }
+   // * If the PC is dead, it's in the move heap and will get automatically *
+   //  * deleted when the heap destructs.  In that case, we can't call       *
+   //  * delete_pc(), because it will lead to a double delete.               *
+
+   character_delete(d.PC);
+ }
 
   delete_dungeon(&d);
 
