@@ -73,6 +73,9 @@ class object_description {
   dice hit, damage, dodge, defence, weight, speed, attribute, value;
   bool artifact;
   uint32_t rarity;
+//If those things are instances of objects, then they are contructor.
+//If it is not an instance of an object, treated as assignment statement
+//They need to be in the other that they are defined in the class
  public:
   object_description() : name(),    description(), type(objtype_no_type),
                          color(0),  hit(),         damage(),

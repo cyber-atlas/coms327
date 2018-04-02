@@ -88,10 +88,9 @@ int main(int argc, char *argv[])
   char *pgm_file;
 
   parse_descriptions(&d);
-  print_descriptions(&d);
-  destroy_descriptions(&d);
+  //print_descriptions(&d);
+ //destroy_descriptions(&d);
 
-  return 0;
   
   memset(&d, 0, sizeof (d));
 
@@ -283,6 +282,8 @@ int main(int argc, char *argv[])
   }
 
   delete_dungeon(&d);
-
+  
+  //Put here to prevent leaky memory
+  destroy_descriptions(&d);
   return 0;
 }
