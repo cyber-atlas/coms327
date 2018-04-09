@@ -7,11 +7,19 @@
 # include "character.h"
 # include "dungeon.h"
 
+# include "object.h"
+
+using namespace std;
+
 class pc : public character {
- public:
+ public:	 
   ~pc() {}
   terrain_type_t known_terrain[DUNGEON_Y][DUNGEON_X];
   uint8_t visible[DUNGEON_Y][DUNGEON_X];
+
+  //TODO make the pc equipment slots
+  object *inventory[10];
+
 };
 
 void pc_delete(pc *pc);
@@ -26,5 +34,7 @@ void pc_init_known_terrain(pc *p);
 void pc_observe_terrain(pc *p, dungeon *d);
 int32_t is_illuminated(pc *p, int16_t y, int16_t x);
 void pc_reset_visibility(pc *p);
+
+void pc_init_inventory();
 
 #endif

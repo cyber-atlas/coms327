@@ -253,3 +253,13 @@ void pc_see_object(character *the_pc, object *o)
     o->has_been_seen();
   }
 }
+
+//Initializes all the elements in the array to NULL hard coded 10 because the inventory should be 10 slots according to the spec
+void pc_intit_inventory(pc *p){
+	for(int slot =0; slot < 10; slot++){
+	
+		p->inventory[slot] = NULL;
+	}
+
+
+}
