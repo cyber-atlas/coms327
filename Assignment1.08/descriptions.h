@@ -6,6 +6,7 @@
 # include <vector>
 # include <string>
 # include "dice.h"
+# include "npc.h"
 
 typedef struct dungeon dungeon_t;
 
@@ -63,6 +64,28 @@ class monster_description {
            const uint32_t rarity);
   std::ostream &print(std::ostream &o);
   char get_symbol() { return symbol; }
+  inline const std::string get_name() const {return name;}
+  inline const std::string get_description() const {return description;}
+  inline const uint32_t  get_color() const {return color[0];}
+  inline const dice &get_speed() const {return speed;}
+  inline const uint32_t get_abilities() const {return abilities;}
+  inline const dice &get_hitpoints() const {return hitpoints;}
+  inline const dice &get_damage() const {return damage;}
+  inline const uint32_t get_rarity() const {return rarity;}
+  npc* gen_monster()
+  {
+    npc* current = new npc;
+    current->name = this->name;
+    current->description = this->description;
+    current->symbol = this->symbol;
+    current->abilities = this->abilities;
+    current->speed = this->speed.roll();
+    current->damage = this->damage;
+    current->hitpoints = this->hitpoints.roll();
+    current->color = this->color[0];
+    current->rarity = this->rarity;
+    return current;
+  }
 };
 
 class object_description {
@@ -73,9 +96,6 @@ class object_description {
   dice hit, damage, dodge, defence, weight, speed, attribute, value;
   bool artifact;
   uint32_t rarity;
-//If those things are instances of objects, then they are contructor.
-//If it is not an instance of an object, treated as assignment statement
-//They need to be in the other that they are defined in the class
  public:
   object_description() : name(),    description(), type(objtype_no_type),
                          color(0),  hit(),         damage(),
@@ -113,6 +133,8 @@ class object_description {
   inline const dice &get_speed() const { return speed; }
   inline const dice &get_attribute() const { return attribute; }
   inline const dice &get_value() const { return value; }
+  inline const uint32_t get_rarity() const { return rarity;}
+  inline const bool get_artifact() const { return artifact;}
 };
 
 std::ostream &operator<<(std::ostream &o, monster_description &m);

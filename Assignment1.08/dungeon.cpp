@@ -13,6 +13,7 @@
 #include "pc.h"
 #include "npc.h"
 #include "io.h"
+#include "object.h"
 
 #define DUMP_HARDNESS_IMAGES 0
 
@@ -626,6 +627,8 @@ int gen_dungeon(dungeon_t *d)
 void delete_dungeon(dungeon_t *d)
 {
   free(d->rooms);
+  d->object_descriptions.clear();
+  d->monster_descriptions.clear();
   heap_delete(&d->events);
   memset(d->character_map, 0, sizeof (d->character_map));
 }
@@ -994,6 +997,7 @@ void new_dungeon(dungeon_t *d)
   d->character_sequence_number = sequence_number;
 
   place_pc(d);
+  //generate the character map for each new dungeon
   d->character_map[d->PC->position[dim_y]][d->PC->position[dim_x]] = d->PC;
 
   gen_monsters(d);

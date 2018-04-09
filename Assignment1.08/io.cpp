@@ -197,6 +197,7 @@ static character *io_nearest_visible_monster(dungeon_t *d)
   return n;
 }
 
+//this needs to be changed to display stuff
 void io_display(dungeon_t *d)
 {
   uint32_t y, x;
@@ -217,6 +218,10 @@ void io_display(dungeon_t *d)
                   1, 0)) {
         mvaddch(y + 1, x,
                 character_get_symbol(d->character_map[y][x]));
+	if (d->object_map[y][x] != NULL){
+	mvaddch(y+1, x, d->object_map[y][x] -> symbol);
+	}
+	////TODO aded the object symbol maybe?
         visible_monsters++;
       } else {
         switch (pc_learned_terrain(d->PC, y, x)) {
@@ -776,3 +781,4 @@ void io_handle_input(dungeon_t *d)
     }
   } while (fail_code);
 }
+

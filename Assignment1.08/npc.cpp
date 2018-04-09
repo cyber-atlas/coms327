@@ -29,7 +29,7 @@ void gen_monsters(dungeon *d)
   npc *m;
   uint32_t room;
   pair_t p;
-  const static char symbol[] = "0123456789abcdef"; //TODO No longer care about this so we can comment out because we get our abilities directly from the file
+  const static char symbol[] = "0123456789abcdef";
   uint32_t num_cells;
   
   num_cells = max_monster_cells(d);
@@ -51,12 +51,12 @@ void gen_monsters(dungeon *d)
     m->position[dim_y] = p[dim_y];
     m->position[dim_x] = p[dim_x];
     d->character_map[p[dim_y]][p[dim_x]] = m;
-    m->speed = rand_range(5, 20);//TODO add speed from description
+    m->speed = rand_range(5, 20);
     m->alive = 1;
     m->sequence_number = ++d->character_sequence_number;
     m->characteristics = rand() & 0x0000000f;
     /*    m->npc->characteristics = 0xf;*/
-    m->symbol = symbol[m->characteristics];//TODO can comment out :
+    m->symbol = symbol[m->characteristics];
     m->have_seen_pc = 0;
     m->kills[kill_direct] = m->kills[kill_avenged] = 0;
 
@@ -527,4 +527,57 @@ void npc_next_pos(dungeon_t *d, npc *c, pair_t next)
 uint32_t dungeon_has_npcs(dungeon_t *d)
 {
   return d->num_monsters;
+}
+
+/**
+ * Much like gen_monsters
+ * @param d dungeon
+ * @param num_npcs number of npcs to generate
+ */
+void gen_npcs(dungeon *d, uint16_t num_npcs)
+{
+  npc *current;
+  uint32_t room;
+  pair_t position;
+  uint64_t monster;
+
+  if(d->max_monsters < num_npcs)
+  {
+    d->num_monsters = d->max_monsters;
+  }
+  else
+  {
+    d->num_monsters = num_npcs;
+  }
+
+  for(int i = 0; i < num_npcs; ++i)
+  {
+    monster = rand_range(0, (d->monster_descriptions.size()-1));
+    current = d->monster_descriptions[monster].gen_monster();
+
+    do {
+      room = rand_range(1, d->num_rooms - 1);
+      position[dim_y] = rand_range(d->rooms[room].position[dim_y],
+                                    d->rooms[room].position[dim_y] +
+                                    d->rooms[room].size[dim_y] - 1);
+      position[dim_x] = rand_range(d->rooms[room].position[dim_x],
+                                   d->rooms[room].position[dim_x] +
+                                       d->rooms[room].size[dim_x] - 1);
+    }while(d->character_map[position[dim_y]][position[dim_x]]);
+
+    current->position[dim_y] = position[dim_y];
+    current->position[dim_x] = position[dim_x];
+    current->sequence_number = ++d->character_sequence_number;
+    current->kills[kill_direct] = 0;
+    current->kills[kill_avenged] = 0;
+    current->alive = 1;
+    current->have_seen_pc = 0;
+    current->rarity = d->monster_descriptions[monster].get_rarity();
+
+    //place this npc in the character map
+    d->character_map[position[dim_y]][position[dim_x]] = current;
+
+    //let it have terms
+    heap_insert(&d->events, new_event(d, event_character_turn, current, 0));
+  }
 }

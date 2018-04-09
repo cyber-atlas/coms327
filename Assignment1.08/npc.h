@@ -2,9 +2,11 @@
 # define NPC_H
 
 # include <stdint.h>
+# include <vector>
 
 # include "dims.h"
 # include "character.h"
+# include "dice.h"
 
 # define NPC_SMART         0x00000001
 # define NPC_TELEPATH      0x00000002
@@ -49,11 +51,19 @@ class npc : public character {
   npc_characteristics_t characteristics;
   uint32_t have_seen_pc;
   pair_t pc_last_known_position;
+  std::string name;
+  std::string description;
+  uint32_t color;
+  int32_t hitpoints;
+  dice damage;
+  uint32_t abilities;
+  uint32_t rarity;
 };
 
 void gen_monsters(dungeon *d);
 void npc_delete(npc *n);
 void npc_next_pos(dungeon *d, npc *c, pair_t next);
 uint32_t dungeon_has_npcs(dungeon *d);
+void gen_npcs(dungeon *d, uint16_t num_npcs);
 
 #endif

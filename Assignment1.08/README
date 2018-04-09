@@ -1,0 +1,4 @@
+I parse both objects and monsterfiles. 
+The monsters render as they should
+The objects do not render as they should 
+There are no colors. I am simulating colorblindness. It is a feature.

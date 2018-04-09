@@ -10,6 +10,9 @@
 #include "npc.h"
 #include "move.h"
 #include "io.h"
+#include "object.h"
+#include "descriptions.h"
+#include "npc.h"
 
 const char *victory =
   "\n                                       o\n"
@@ -87,17 +90,16 @@ int main(int argc, char *argv[])
   char *load_file;
   char *pgm_file;
 
-  parse_descriptions(&d);
   //print_descriptions(&d);
- //destroy_descriptions(&d);
+  //destroy_descriptions(&d);
 
   
   memset(&d, 0, sizeof (d));
 
-  /* Default behavior: Seed with the time, generate a new dungeon, *
+  /*Default behavior: Seed with the time, generate a new dungeon, *
    * and don't write to disk.                                      */
   do_load = do_save = do_image = do_save_seed =
-    do_save_image = do_place_pc = 0;
+  do_save_image = do_place_pc = 0;
   do_seed = 1;
   save_file = load_file = NULL;
   d.max_monsters = MAX_MONSTERS;
@@ -233,7 +235,10 @@ int main(int argc, char *argv[])
   }
 
   config_pc(&d);
-  gen_monsters(&d);
+  parse_descriptions(&d);
+  gen_npcs(&d, d.max_monsters);
+  generate_objects(&d, rand_range(10, 30));
+
 
   io_display(&d);
   io_queue_message("Seed is %u.", seed);
@@ -281,9 +286,16 @@ int main(int argc, char *argv[])
     character_delete(d.PC);
   }
 
-  delete_dungeon(&d);
-  
-  //Put here to prevent leaky memory
+  //clean up and properly deallocate objects and monsters when quiting game
+  for(int n = 0; n < DUNGEON_Y; ++n)
+  {
+    for(int o = 0; o < DUNGEON_X; ++o)
+    {
+      delete(d.object_map[n][o]);
+    }
+  }
   destroy_descriptions(&d);
+  delete_dungeon(&d);
+
   return 0;
 }
