@@ -133,7 +133,6 @@ void move_character(dungeon *d, character *c, pair_t next)
     
     //Sets the current location of the character map to the character that is in the way. 
     //Then moves to the character to the position of the character in the way
-    //TODO for some reason there is an issue with this, segfaults after dealing with an object or doing combat
     d->character_map[c->position[dim_y]][c->position[dim_x]] = in_the_way;
     in_the_way -> position[dim_y] = c-> position[dim_y];
     in_the_way -> position[dim_x] = c-> position[dim_x];
@@ -205,7 +204,6 @@ void do_moves(dungeon *d)
     }
 
     npc_next_pos(d, (npc *) c, next);
-    //TODO This is where I start to get issues
     move_character(d, c, next);
 
     heap_insert(&d->events, update_event(d, e, 1000 / c->speed));

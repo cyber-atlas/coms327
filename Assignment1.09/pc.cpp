@@ -30,6 +30,22 @@ void place_pc(dungeon_t *d)
   io_display(d);
 }
 
+
+//Initializes all the elements in the array to NULL hard coded 10 because the inventory should be 10 slots according to the spec
+//TODO find where to initialize this. config_pc maybe? not sure
+//Seems to work pretty well
+//Check to make sure not leaking memory when expunge
+//Check that when dropping on top of something that something graceful happens(refuse to drop) 
+//Make sure you pick up off a stack correctl
+void pc_intit_inventory(pc *p){
+	for(int slot =0; slot < 10; slot++){
+	
+		p->inventory[slot] = NULL;
+	}
+
+
+}
+
 void config_pc(dungeon_t *d)
 {
   static dice pc_dice(0, 1, 4);
@@ -47,6 +63,12 @@ void config_pc(dungeon_t *d)
   d->PC->color.push_back(COLOR_WHITE);
   d->PC->damage = &pc_dice;
   d->PC->name = "Isabella Garcia-Shapiro";
+
+  //TODO init the inventory here
+  pc_intit_inventory(d->PC);
+
+  //Sets the pc hitpoints
+  d->PC->hitpoints = 5000;
 
   d->character_map[character_get_y(d->PC)][character_get_x(d->PC)] = d->PC;
 
@@ -254,12 +276,3 @@ void pc_see_object(character *the_pc, object *o)
   }
 }
 
-//Initializes all the elements in the array to NULL hard coded 10 because the inventory should be 10 slots according to the spec
-void pc_intit_inventory(pc *p){
-	for(int slot =0; slot < 10; slot++){
-	
-		p->inventory[slot] = NULL;
-	}
-
-
-}

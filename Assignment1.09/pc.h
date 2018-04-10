@@ -17,8 +17,9 @@ class pc : public character {
   terrain_type_t known_terrain[DUNGEON_Y][DUNGEON_X];
   uint8_t visible[DUNGEON_Y][DUNGEON_X];
 
-  //TODO make the pc equipment slots
   object *inventory[10];
+  //TODO make the equipped items
+  
 
 };
 
@@ -36,5 +37,7 @@ int32_t is_illuminated(pc *p, int16_t y, int16_t x);
 void pc_reset_visibility(pc *p);
 
 void pc_init_inventory();
+//TODO make a place to define the dice. I am assuming here
+
 
 #endif
