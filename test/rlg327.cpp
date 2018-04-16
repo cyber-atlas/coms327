@@ -10,6 +10,7 @@
 #include "npc.h"
 #include "move.h"
 #include "io.h"
+#include "object.h"
 
 const char *victory =
   "\n                                       o\n"
@@ -68,7 +69,8 @@ void usage(char *name)
   fprintf(stderr,
           "Usage: %s [-r|--rand <seed>] [-l|--load [<file>]]\n"
           "          [-s|--save [<file>]] [-i|--image <pgm file>]\n"
-          "          [-p|--pc <y> <x>] [-n|--nummon <count>]\n",
+          "          [-p|--pc <y> <x>] [-n|--nummon <count>]\n"
+          "          [-o|--objcount <oject count>]\n",
           name);
 
   exit(-1);
@@ -87,11 +89,6 @@ int main(int argc, char *argv[])
   char *load_file;
   char *pgm_file;
 
-  parse_descriptions(&d);
-  //print_descriptions(&d);
- //destroy_descriptions(&d);
-
-  
   memset(&d, 0, sizeof (d));
 
   /* Default behavior: Seed with the time, generate a new dungeon, *
@@ -101,6 +98,7 @@ int main(int argc, char *argv[])
   do_seed = 1;
   save_file = load_file = NULL;
   d.max_monsters = MAX_MONSTERS;
+  d.max_objects = MAX_OBJECTS;
 
   /* The project spec requires '--load' and '--save'.  It's common  *
    * to have short and long forms of most switches (assuming you    *
@@ -203,6 +201,14 @@ int main(int argc, char *argv[])
           }
           do_place_pc = 1;
           break;
+        case 'o':
+          if ((!long_arg && argv[i][2]) ||
+              (long_arg && strcmp(argv[i], "-objcount")) ||
+              argc < ++i + 1 /* No more arguments */ ||
+              !sscanf(argv[i], "%hu", &d.max_objects)) {
+            usage(argv[0]);
+          }
+          break;
         default:
           usage(argv[0]);
         }
@@ -221,6 +227,7 @@ int main(int argc, char *argv[])
 
   srand(seed);
 
+  parse_descriptions(&d);
   io_init_terminal();
   init_dungeon(&d);
 
@@ -234,10 +241,13 @@ int main(int argc, char *argv[])
 
   config_pc(&d);
   gen_monsters(&d);
+  gen_objects(&d);
+  pc_observe_terrain(d.PC, &d);
+
 
   io_display(&d);
   io_queue_message("Seed is %u.", seed);
-  while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
+  while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit && boss_alive()) {
     do_moves(&d);
   }
   io_display(&d);
@@ -282,8 +292,7 @@ int main(int argc, char *argv[])
   }
 
   delete_dungeon(&d);
-  
-  //Put here to prevent leaky memory
   destroy_descriptions(&d);
+
   return 0;
 }

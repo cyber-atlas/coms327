@@ -5,8 +5,8 @@
 # undef swap
 # include <vector>
 # include <string>
+
 # include "dice.h"
-# include "character.h"
 # include "npc.h"
 
 typedef struct dungeon dungeon_t;
@@ -39,6 +39,7 @@ typedef enum object_type {
 } object_type_t;
 
 extern const char object_symbol[];
+class npc;
 
 class monster_description {
  private:
@@ -48,10 +49,21 @@ class monster_description {
   uint32_t abilities;
   dice speed, hitpoints, damage;
   uint32_t rarity;
+  uint32_t num_alive, num_killed;
+  inline bool can_be_generated()
+  {
+    return (((abilities & NPC_UNIQ) && !num_alive && !num_killed) ||
+            !(abilities & NPC_UNIQ));
+  }
+  inline bool pass_rarity_roll()
+  {
+    return rarity > (unsigned) (rand() % 100);
+  }
+
  public:
   monster_description() : name(),       description(), symbol(0),   color(0),
                           abilities(0), speed(),       hitpoints(), damage(),
-                          rarity(0)
+                          rarity(0), num_alive(0), num_killed(0)
   {
   }
   void set(const std::string &name,
@@ -65,6 +77,21 @@ class monster_description {
            const uint32_t rarity);
   std::ostream &print(std::ostream &o);
   char get_symbol() { return symbol; }
+  static npc *generate_monster(dungeon_t *d);
+  inline void birth()
+  {
+    num_alive++;
+  }
+  inline void die()
+  {
+    num_killed++;
+    num_alive--;
+  }
+  inline void destroy()
+  {
+    num_alive--;
+  }
+  friend npc;
 };
 
 class object_description {
@@ -75,16 +102,24 @@ class object_description {
   dice hit, damage, dodge, defence, weight, speed, attribute, value;
   bool artifact;
   uint32_t rarity;
-//If those things are instances of objects, then they are contructor.
-//If it is not an instance of an object, treated as assignment statement
-//They need to be in the other that they are defined in the class
+  uint32_t num_generated;
+  uint32_t num_found;
  public:
   object_description() : name(),    description(), type(objtype_no_type),
                          color(0),  hit(),         damage(),
                          dodge(),   defence(),     weight(),
                          speed(),   attribute(),   value(),
-                         artifact(false), rarity(0)
+                         artifact(false), rarity(0), num_generated(0),
+                         num_found(0)
   {
+  }
+  inline bool can_be_generated()
+  {
+    return !artifact || (artifact && !num_generated && !num_found);
+  }
+  inline bool pass_rarity_roll()
+  {
+    return rarity > (unsigned) (rand() % 100);
   }
   void set(const std::string &name,
            const std::string &description,
@@ -115,11 +150,12 @@ class object_description {
   inline const dice &get_speed() const { return speed; }
   inline const dice &get_attribute() const { return attribute; }
   inline const dice &get_value() const { return value; }
+  inline void generate() { num_generated++; }
+  inline void destroy() { num_generated--; }
+  inline void find() { num_found++; }
 };
 
 std::ostream &operator<<(std::ostream &o, monster_description &m);
 std::ostream &operator<<(std::ostream &o, object_description &od);
-
-void make_monster(dungeon_t *d, npc *m);
 
 #endif

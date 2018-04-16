@@ -15,6 +15,7 @@
 #include "dice.h"
 #include "character.h"
 #include "utils.h"
+#include "event.h"
 
 #define MONSTER_FILE_SEMANTIC          "RLG327 MONSTER DESCRIPTION"
 #define MONSTER_FILE_VERSION           1U
@@ -94,7 +95,7 @@ static const struct {
   { 0, objtype_no_type }
 };
 
-extern const char object_symbol[] = {
+const char object_symbol[] = {
   '*', /* objtype_no_type */
   '|', /* objtype_WEAPON */
   ')', /* objtype_OFFHAND */
@@ -1063,20 +1064,21 @@ std::ostream &operator<<(std::ostream &o, object_description &od)
   return od.print(o);
 }
 
-void make_monster (dungeon_t *d, npc *m){
-	
-	// End is the last place in the mosnter description array -1
-	int end = d -> monster_descriptions.size();
+npc *monster_description::generate_monster(dungeon *d)
+{
+  npc *n;
+  std::vector<monster_description> &v = d->monster_descriptions;
+  uint32_t i;
 
-	//Spot is the place that monster you are getting is in the description in the array
-	int spot = rand_range(1, end -1;
-	m -> name = d -> monster_descriptions[spot].name;
-	m -> desc = d -> monster_descriptions[spot].description;
-	m -> symbol = d -> monster_descriptions[spot].symbol;
-	m -> color = d -> monster_descriptions[spot].color[0];
-	m -> abilities = d -> monster_descriptions[spot].abilities;
-	m -> speed = d -> monster_descriptions[spot].speed.roll();
-	m -> hitpoints = d -> monster_descriptions[spot].hitpoints.roll();
-	m -> damage = d -> monster_descriptions[spot].damage;
+  while (!v[(i = (rand() % v.size()))].can_be_generated() ||
+         !v[i].pass_rarity_roll())
+    ;
 
+  monster_description &m = v[i];
+
+  n = new npc(d, m);
+
+  heap_insert(&d->events, new_event(d, event_character_turn, n, 0));
+
+  return n;
 }

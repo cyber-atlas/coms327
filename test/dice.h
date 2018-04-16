@@ -6,7 +6,10 @@
 
 class dice {
  private:
+ //base is the minimum number
   int32_t base;
+  //number is the number of dice being rolled
+  //sides is the number of sided the dice has
   uint32_t number, sides;
  public:
   dice() : base(0), number(0), sides(0)

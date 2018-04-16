@@ -24,7 +24,7 @@ class character {
   int32_t speed;
   uint32_t alive;
   std::vector<uint32_t> color;
-  uint32_t hp;
+  int32_t hp;
   const dice *damage;
   const char *name;
   /* Characters use to have a next_turn for the move queue.  Now that it is *
@@ -38,10 +38,6 @@ class character {
   uint32_t kills[num_kill_types];
   inline uint32_t get_color() { return color[rand_range(0, color.size() - 1)]; }
   inline char get_symbol() { return symbol; }
-  
-  //Gives a place to store the hitpoints
-  int hitpoints;
-
 };
 
 class dungeon;

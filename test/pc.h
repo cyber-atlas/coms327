@@ -9,8 +9,11 @@
 
 class pc : public character {
  public:
+  ~pc() {}
   terrain_type_t known_terrain[DUNGEON_Y][DUNGEON_X];
   uint8_t visible[DUNGEON_Y][DUNGEON_X];
+  object *inventory[10];
+  object *equipped[12]; //equipment slots for stuff wearing
 };
 
 void pc_delete(pc *pc);

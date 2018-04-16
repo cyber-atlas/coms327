@@ -62,5 +62,6 @@ void gen_monsters(dungeon *d);
 void npc_delete(npc *n);
 void npc_next_pos(dungeon *d, npc *c, pair_t next);
 uint32_t dungeon_has_npcs(dungeon *d);
+const char * get_npc_desc(npc *n);
 
 #endif

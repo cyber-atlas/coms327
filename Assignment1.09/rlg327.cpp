@@ -244,9 +244,10 @@ int main(int argc, char *argv[])
   gen_objects(&d);
   pc_observe_terrain(d.PC, &d);
 
+
   io_display(&d);
   io_queue_message("Seed is %u.", seed);
-  while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit) {
+  while (pc_is_alive(&d) && dungeon_has_npcs(&d) && !d.quit && boss_alive()) {
     do_moves(&d);
   }
   io_display(&d);

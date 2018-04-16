@@ -1,5 +1,7 @@
 #ifndef MOVE_H
 # define MOVE_H
+#define NUM_INVENTORY              10
+#define NUM_EQUIPMENT              12
 
 # include <stdint.h>
 
@@ -18,5 +20,6 @@ uint32_t in_corner(dungeon *d, character *c);
 uint32_t against_wall(dungeon *d, character *c);
 uint32_t move_pc(dungeon *d, uint32_t dir);
 void move_character(dungeon *d, character *c, pair_t next);
+int boss_alive();
 
 #endif

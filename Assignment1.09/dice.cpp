@@ -10,7 +10,6 @@ int32_t dice::roll(void) const
 
   total = base;
 
-  //Checks to make sure it is a real dice
   if (sides) {
     for (i = 0; i < number; i++) {
       total += rand_range(1, sides);

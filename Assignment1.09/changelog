@@ -1,0 +1,22 @@
+Date Apr 11 10:00:24 2018 -500
+
+    Grinded all night and got the project finished
+
+Date:   Tue Apr 10 13:39:49 2018 -0500
+
+    Added a hitpoints field, initialized inventory to NULL by default
+
+
+Date:   Mon Apr 9 18:20:49 2018 -0500
+
+    Added the inventory slots for the pc and an initializer to make the inventory null at the beginning. Still need to find where to put that initalizer, but hey progress
+
+
+Date:   Mon Apr 9 17:37:01 2018 -0500
+
+    Just making sure everything is up to date
+
+
+Date:   Mon Apr 9 17:31:23 2018 -0500
+
+    Started a few days ago, the only new functionality that I have working is that the monsters no longer kill each other
